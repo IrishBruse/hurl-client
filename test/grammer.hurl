@@ -1,5 +1,5 @@
 # This is a comment
-GET http://{{host}}
+GET http://{{host}}/asdasd
 Header1: Value1
 Header2: a\#    # value with \#
 Header3: GET

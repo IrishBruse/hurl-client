@@ -3,7 +3,7 @@
 		"lineComment": "#"
 	},
 	"autoCloseBefore": ";:.,=}])> \n\t",
-	"brackets": [["[", "]"], ["{", "}"]],
+	"brackets": [["[", "]"]],
 	"autoClosingPairs": [
 		{ "open": "\"", "close": "\"", "notIn": ["string"] },
 		{ "open": "'", "close": "'", "notIn": ["string", "comment"] },

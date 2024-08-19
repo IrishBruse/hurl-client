@@ -6,6 +6,9 @@
 	"information_for_contributors": ["https://hurl.dev/docs/grammar.html"],
 	"patterns": [
 		{
+			"include": "#template"
+		},
+		{
 			"include": "#version"
 		},
 		{
@@ -33,9 +36,6 @@
 			"include": "#header"
 		},
 		{
-			"include": "#template"
-		},
-		{
 			"include": "#predicate-func"
 		},
 		{
@@ -55,18 +55,32 @@
 				}
 			]
 		},
+		"template": {
+			"match": "\\{\\{(.*)\\}\\}",
+			"name": "meta.template.hurl",
+			"captures": {
+				"1": {
+					"name": "variable.hurl"
+				}
+			}
+		},
 		"request": {
-			"name": "keyword.hurl",
 			"captures": {
 				"1": {
 					"name": "keyword.hurl"
 				},
 				"2": {
 					"name": "string.other.link.hurl"
+				},
+				"3": {
+					"patterns": [{ "include": "#template" }]
+				},
+				"4": {
+					"name": "string.other.link.hurl"
 				}
 			},
 			"comment": "HTTP request type",
-			"match": "^(GET|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH|LINK|UNLINK|PURGE|LOCK|UNLOCK|PROPFIND|VIEW)\\s(.+)?"
+			"match": "^(GET|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH|LINK|UNLINK|PURGE|LOCK|UNLOCK|PROPFIND|VIEW)\\s([^\\{\\s]*)(\\{\\{.*\\}\\})?(.*)"
 		},
 		"version": {
 			"name": "keyword.hurl",
@@ -156,15 +170,6 @@
 					"name": "constant.character.escape.hurl"
 				}
 			]
-		},
-		"template": {
-			"match": "{{(.+)}}",
-			"name": "meta.template.hurl",
-			"captures": {
-				"1": {
-					"name": "variable.hurl"
-				}
-			}
 		},
 		"lang": {
 			"comment": "fenced block",
