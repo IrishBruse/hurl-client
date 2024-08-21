@@ -3,6 +3,7 @@
 	"description": "HURL language support",
 	"author": "Ethan Conneely",
 	"license": "MIT",
+	"icon": "./assets/icon.png",
 	"version": "0.0.1",
 	"repository": {
 		"type": "git",
@@ -40,7 +41,7 @@
 			{
 				"language": "hurl",
 				"scopeName": "source.hurl",
-				"path": "./syntax/hurl.tmLanguage.json",
+				"path": "./assets/syntax/hurl.tmLanguage.json",
 				"embeddedLanguages": {
 					"source.hurl embedded.json.hurl": "json",
 					"source.hurl embedded.markdown.hurl": "markdown",
@@ -53,7 +54,11 @@
 				"id": "hurl",
 				"aliases": ["Hurl", "hurl"],
 				"extensions": [".hurl"],
-				"configuration": "./syntax/language-configuration.json"
+				"configuration": "./assets/syntax/language-configuration.json",
+				"icon": {
+					"dark": "assets/langIcon.png",
+					"light": "assets/langIcon.png"
+				}
 			}
 		]
 	},
