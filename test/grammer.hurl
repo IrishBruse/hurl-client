@@ -16,13 +16,11 @@ body not contains "200"
 body not contains "GET"
 body not contains "\"\#"
 
-
-POST http://example.com
+POST http://example.com/
 {
   "id": {{id}},
   "message": "Hello"
 }
-
 
 POST http://example.com
 ```json

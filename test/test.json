@@ -3,8 +3,8 @@
     "num": 543.32,
     "yes": true,
     "obj": {
-        "foo": "bar",
-        "num": 543.32,
-        "yes": true
+        "foo": "=asd\n",
+        "num": 543,
+        "no": false
     }
 }
