@@ -1,5 +1,6 @@
 {
 	"name": "hurl",
+	"displayName": "Hurl",
 	"description": "HURL language support",
 	"author": "Ethan Conneely",
 	"license": "MIT",
@@ -10,7 +11,7 @@
 		"url": "https://github.com/IrishBruse/hurl"
 	},
 	"publisher": "irishbruse",
-	"categories": [],
+	"categories": ["Formatters", "Linters", "Programming Languages"],
 	"keywords": ["multi-root ready"],
 	"engines": {
 		"vscode": "^1.75.0"
@@ -73,9 +74,10 @@
 	"devDependencies": {
 		"@types/mocha": "^10.0.6",
 		"@types/node": "^18.14.6",
-		"@typescript-eslint/eslint-plugin": "^7.18.0",
-		"@typescript-eslint/parser": "^7.18.0",
 		"mocha": "^10.7.3",
 		"typescript": "^5.5.4"
+	},
+	"dependencies": {
+		"vscode-uri": "^3.0.8"
 	}
 }

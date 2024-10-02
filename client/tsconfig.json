@@ -5,7 +5,9 @@
 		"lib": ["es2020"],
 		"outDir": "out",
 		"rootDir": "src",
-		"sourceMap": true
+		"sourceMap": true,
+		"incremental": true,
+		"tsBuildInfoFile": "./out/.tsbuildinfo"
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", ".vscode-test"]

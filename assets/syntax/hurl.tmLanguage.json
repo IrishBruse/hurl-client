@@ -80,7 +80,7 @@
 				}
 			},
 			"comment": "HTTP request type",
-			"match": "^(GET|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH|LINK|UNLINK|PURGE|LOCK|UNLOCK|PROPFIND|VIEW)\\s([^\\{\\s]*)(\\{\\{.*\\}\\})?(.*)"
+			"match": "\\s*(GET|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH|LINK|UNLINK|PURGE|LOCK|UNLOCK|PROPFIND|VIEW)\\s([^\\{\\s]*)(\\{\\{.*\\}\\})?(.*)"
 		},
 		"version": {
 			"name": "keyword.hurl",
@@ -99,7 +99,7 @@
 				}
 			},
 			"comment": "HTTP Request version",
-			"match": "^(HTTP)(/?)([0-9]\\.?[0-9]?)?\\s([0-9\\*]+)?"
+			"match": "\\s*(HTTP)(/?)([0-9]\\.?[0-9]?)?\\s([0-9\\*]+)?"
 		},
 		"comment": {
 			"captures": {
@@ -132,7 +132,7 @@
 			"match": "(==|!=|>|>=|<|<=|not)"
 		},
 		"query": {
-			"match": "(status|url|header|cookie|body|jsonpath|xpath|regex|variable|duration|sha256|md5|bytes)\\s",
+			"match": "\\s*(status|url|header|cookie|body|jsonpath|xpath|regex|variable|duration|sha256|md5|bytes)\\s",
 			"captures": {
 				"1": {
 					"name": "support.function.hurl"
@@ -140,7 +140,7 @@
 			}
 		},
 		"predicate-func": {
-			"match": "(startsWith|endsWith|contains|matches|exists|isEmpty|includes|isInteger|isFloat|isBoolean|isString|isCollection|isDate|isIsoDate)\\s",
+			"match": "\\s*(startsWith|endsWith|contains|matches|exists|isEmpty|includes|isInteger|isFloat|isBoolean|isString|isCollection|isDate|isIsoDate)\\s",
 			"captures": {
 				"1": {
 					"name": "support.function.hurl"
@@ -148,7 +148,7 @@
 			}
 		},
 		"header": {
-			"match": "^(\\w+)(:)\\s",
+			"match": "\\s*(\\w+)(:)\\s",
 			"captures": {
 				"1": {
 					"name": "support.type.property-name.hurl"

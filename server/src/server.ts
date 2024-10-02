@@ -1,51 +1,47 @@
 import {
 	CompletionItemKind,
-	DiagnosticSeverity,
+	createConnection,
 	DidChangeConfigurationNotification,
 	DocumentDiagnosticReportKind,
+	DocumentFormattingRequest,
 	ProposedFeatures,
-	TextDocumentSyncKind,
+	Range,
 	TextDocuments,
-	createConnection,
+	TextDocumentSyncKind,
 	type CompletionItem,
-	type Diagnostic,
 	type DocumentDiagnosticReport,
 	type InitializeParams,
 	type InitializeResult,
 	type TextDocumentPositionParams,
 } from "vscode-languageserver/node";
+import { URI } from "vscode-uri";
 
+import { spawnSync } from "node:child_process";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { config, defaultSettings, type LspSettings } from "./config";
+import { validateTextDocument } from "./validation";
 
-// Create a connection for the server, using Node's IPC as a transport.
-// Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
 
-// Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
-
-let hasConfigurationCapability = false;
-let hasWorkspaceFolderCapability = false;
-let hasDiagnosticRelatedInformationCapability = false;
 
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
-	// Does the client support the `workspace/configuration` request?
-	// If not, we fall back using global settings.
-	hasConfigurationCapability = !!(
+	config.hasConfigurationCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.configuration
 	);
-	hasWorkspaceFolderCapability = !!(
+	config.hasWorkspaceFolderCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.workspaceFolders
 	);
-	hasDiagnosticRelatedInformationCapability =
+	config.hasDiagnosticRelatedInformationCapability =
 		!!capabilities.textDocument?.publishDiagnostics?.relatedInformation;
+
+	config.hasFormattingCapability = !!capabilities.textDocument?.formatting;
 
 	const result: InitializeResult = {
 		capabilities: {
-			textDocumentSync: TextDocumentSyncKind.Incremental,
-			// Tell the client that this server supports code completion.
+			textDocumentSync: TextDocumentSyncKind.Full,
 			completionProvider: {
 				resolveProvider: true,
 			},
@@ -55,7 +51,7 @@ connection.onInitialize((params: InitializeParams) => {
 			},
 		},
 	};
-	if (hasWorkspaceFolderCapability) {
+	if (config.hasWorkspaceFolderCapability) {
 		result.capabilities.workspace = {
 			workspaceFolders: {
 				supported: true,
@@ -66,68 +62,49 @@ connection.onInitialize((params: InitializeParams) => {
 });
 
 connection.onInitialized(() => {
-	if (hasConfigurationCapability) {
-		// Register for all configuration changes.
+	if (config.hasConfigurationCapability) {
 		connection.client.register(
 			DidChangeConfigurationNotification.type,
 			undefined,
 		);
 	}
-	if (hasWorkspaceFolderCapability) {
+	if (config.hasFormattingCapability) {
+		connection.client.register(DocumentFormattingRequest.type);
+	}
+	if (config.hasWorkspaceFolderCapability) {
 		connection.workspace.onDidChangeWorkspaceFolders((_event) => {
 			connection.console.log("Workspace folder change event received.");
 		});
 	}
 });
 
-// The example settings
-interface ExampleSettings {
-	maxNumberOfProblems: number;
-}
-
-// The global settings, used when the `workspace/configuration` request is not supported by the client.
-// Please note that this is not the case when using this server with the client provided in this example
-// but could happen with other clients.
-const defaultSettings: ExampleSettings = { maxNumberOfProblems: 1000 };
-let globalSettings: ExampleSettings = defaultSettings;
-
-// Cache the settings of all open documents
-const documentSettings: Map<string, Promise<ExampleSettings>> = new Map();
-
 connection.onDidChangeConfiguration((change) => {
-	if (hasConfigurationCapability) {
-		// Reset all cached document settings
-		documentSettings.clear();
+	if (config.hasConfigurationCapability) {
+		config.documentSettings.clear();
 	} else {
-		globalSettings = <ExampleSettings>(
-			(change.settings.languageServerExample || defaultSettings)
-		);
+		config.settings = change.settings.languageServerExample || defaultSettings;
 	}
-	// Refresh the diagnostics since the `maxNumberOfProblems` could have changed.
-	// We could optimize things here and re-fetch the setting first can compare it
-	// to the existing setting, but this is out of scope for this example.
 	connection.languages.diagnostics.refresh();
 });
 
-function getDocumentSettings(resource: string): Promise<ExampleSettings> {
-	if (!hasConfigurationCapability) {
-		return Promise.resolve(globalSettings);
+documents.onDidClose((e) => {
+	config.documentSettings.delete(e.document.uri);
+});
+
+export function getDocumentSettings(resource: string): Promise<LspSettings> {
+	if (!config.hasConfigurationCapability) {
+		return Promise.resolve(config.settings);
 	}
-	let result = documentSettings.get(resource);
+	let result = config.documentSettings.get(resource);
 	if (!result) {
 		result = connection.workspace.getConfiguration({
 			scopeUri: resource,
 			section: "languageServerExample",
 		});
-		documentSettings.set(resource, result);
+		config.documentSettings.set(resource, result);
 	}
 	return result;
 }
-
-// Only keep settings for open documents
-documents.onDidClose((e) => {
-	documentSettings.delete(e.document.uri);
-});
 
 connection.languages.diagnostics.on(async (params) => {
 	const document = documents.get(params.textDocument.uri);
@@ -137,78 +114,45 @@ connection.languages.diagnostics.on(async (params) => {
 			items: await validateTextDocument(document),
 		} satisfies DocumentDiagnosticReport;
 	}
-	// We don't know the document. We can either try to read it from disk
-	// or we don't report problems for it.
 	return {
 		kind: DocumentDiagnosticReportKind.Full,
 		items: [],
 	} satisfies DocumentDiagnosticReport;
 });
 
-// The content of a text document has changed. This event is emitted
-// when the text document first opened or when its content has changed.
-documents.onDidChangeContent((change) => {
-	validateTextDocument(change.document);
+documents.onDidChangeContent(({ document }) => {
+	validateTextDocument(document);
 });
 
-async function validateTextDocument(
-	textDocument: TextDocument,
-): Promise<Diagnostic[]> {
-	// In this simple example we get the settings for every validate run.
-	const settings = await getDocumentSettings(textDocument.uri);
-
-	// The validator creates diagnostics for all uppercase words length 2 and more
-	const text = textDocument.getText();
-	const pattern = /\b[A-Z]{2,}\b/g;
-
-	let problems = 0;
-	const diagnostics: Diagnostic[] = [];
-	const m: RegExpExecArray | null = pattern.exec(text);
-	while (m && problems < settings.maxNumberOfProblems) {
-		problems++;
-		const diagnostic: Diagnostic = {
-			severity: DiagnosticSeverity.Warning,
-			range: {
-				start: textDocument.positionAt(m.index),
-				end: textDocument.positionAt(m.index + m[0].length),
-			},
-			message: `${m[0]} is all uppercase.`,
-			source: "ex",
-		};
-		if (hasDiagnosticRelatedInformationCapability) {
-			diagnostic.relatedInformation = [
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range),
-					},
-					message: "Spelling matters",
-				},
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range),
-					},
-					message: "Particularly for names",
-				},
-			];
-		}
-		diagnostics.push(diagnostic);
-	}
-	return diagnostics;
-}
-
 connection.onDidChangeWatchedFiles((_change) => {
-	// Monitored files have change in VSCode
+	console.log(_change);
+
 	connection.console.log("We received a file change event");
 });
 
-// This handler provides the initial list of the completion items.
+connection.onDocumentFormatting(async (params) => {
+	const filePath = URI.parse(params.textDocument.uri).path;
+	const command = `hurlfmt --no-color ${filePath}`;
+
+	try {
+		const process = spawnSync(command, { shell: true });
+
+		if (process.status === 0) {
+			const stdout = process.stdout.toString();
+			const lines = stdout.split(/\r\n|\r|\n/).length;
+			console.log(lines);
+
+			return [{ newText: stdout, range: Range.create(0, 0, lines, 0) }];
+		}
+		console.log(process.status);
+	} catch (err) {
+		console.log(err);
+	}
+	return [];
+});
+
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		// The pass parameter contains the position of the text document in
-		// which code complete got requested. For the example we ignore this
-		// info and always provide the same completion items.
 		return [
 			{
 				label: "GET",
@@ -224,8 +168,6 @@ connection.onCompletion(
 	},
 );
 
-// This handler resolves additional information for the item selected in
-// the completion list.
 connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
 	if (item.data === 1) {
 		item.detail = "TypeScript details";
@@ -237,9 +179,5 @@ connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
 	return item;
 });
 
-// Make the text document manager listen on the connection
-// for open, change and close text document events
 documents.listen(connection);
-
-// Listen on the connection
 connection.listen();
