@@ -1,5 +1,4 @@
 import {
-	CompletionItemKind,
 	createConnection,
 	DidChangeConfigurationNotification,
 	DocumentDiagnosticReportKind,
@@ -132,6 +131,7 @@ connection.onDidChangeWatchedFiles((_change) => {
 
 connection.onDocumentFormatting(async (params) => {
 	const filePath = URI.parse(params.textDocument.uri).path;
+
 	const command = `hurlfmt --no-color ${filePath}`;
 
 	try {
@@ -154,16 +154,16 @@ connection.onDocumentFormatting(async (params) => {
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
 		return [
-			{
-				label: "GET",
-				kind: CompletionItemKind.EnumMember,
-				data: 1,
-			},
-			{
-				label: "POST",
-				kind: CompletionItemKind.EnumMember,
-				data: 2,
-			},
+			// {
+			// 	label: "GET",
+			// 	kind: CompletionItemKind.EnumMember,
+			// 	data: 1,
+			// },
+			// {
+			// 	label: "POST",
+			// 	kind: CompletionItemKind.EnumMember,
+			// 	data: 2,
+			// },
 		];
 	},
 );
