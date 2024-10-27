@@ -1,10 +1,9 @@
 import type { Token } from "moo";
 import * as fs from "node:fs";
-import { type TokenType, Tokenizer } from "./hurl/tokenizer";
+import { Tokenizer } from "./hurl/tokenizer";
 
 console.clear();
 
-let token: Token | undefined = undefined;
 let lexer: Tokenizer;
 
 main("./test/grammer.hurl");
@@ -32,16 +31,14 @@ function main(file: string) {
 //   entry*
 //   lt*
 function hurlFile() {
-	lexer.next();
-
 	//   lt*
-	parseLT();
+	parseLTStar();
 
 	//   entry*
 	parseEntry();
 
 	//   lt*
-	parseLT();
+	parseLTStar();
 }
 
 // entry:
@@ -49,32 +46,16 @@ function hurlFile() {
 //   lt*
 //   response?
 function parseEntry() {
-	token = lexer.peek();
-	console.log(token);
-
-	if (token === undefined) {
-		return;
-	}
-
-	const type = token.type as TokenType;
-
 	//   request
-	let request: Request;
-	if (type === "method") {
-		request = parseRequest();
-	}
+	const request: Request = parseRequest();
 
 	//   lt*
-	parseLT();
+	parseLTStar();
 
 	//   response?
-	const peekToken = lexer.peek();
-	let response: Response | undefined = undefined;
-	if (peekToken?.type === "version") {
-		response = parseResponse();
-	}
+	const response = parseResponse();
 
-	console.log("Result", request, reponse);
+	console.log("Result", request, response);
 }
 
 // request:
@@ -83,14 +64,15 @@ function parseEntry() {
 //   request-section*
 //   body?
 function parseRequest(): Request {
+	console.log("Parse Request");
+
 	// method sp value-string lt
 	const method = lexer.eat("method");
 	lexer.eatSP();
 	const url = lexer.eat("value-string-text");
+	lexer.eatLT();
 
-	parseLT();
-
-	lexer.tryEat("sp");
+	parseHeaders();
 
 	return {
 		method,
@@ -100,13 +82,31 @@ function parseRequest(): Request {
 	};
 }
 
-function parseResponse(): Response {
+// response:
+//   version sp status lt
+//   header*
+//   response-section*
+//   body?
+function parseResponse(): Response | undefined {
+	console.log("Parse Response");
+
+	const peekToken = lexer.peek();
+
+	if (peekToken === undefined) {
+		return undefined;
+	}
+
+	if (peekToken?.type !== "version") {
+		throw new Error(
+			`Expected token of type version but got ${peekToken?.type} - "${peekToken.text}"`,
+		);
+	}
+
+	//   version sp status lt
 	const version = lexer.eat("version");
 	lexer.eatSP();
 	const status = lexer.eat("status");
-	lexer.eatSP();
-
-	console.log(version, status);
+	lexer.eatLT();
 
 	return {
 		version,
@@ -116,13 +116,19 @@ function parseResponse(): Response {
 	};
 }
 
-function parseLT() {
-	// TODO: parse whitespace and comments
+function parseHeaders() {
+	parseLTStar();
+
+	const text = lexer.eat("key-string-text");
+	console.log(text);
+}
+
+function parseLTStar() {
 	while (lexer.tryEat("sp")) {}
 
 	lexer.tryEat("comment");
 
-	// Eat comments
+	lexer.tryEat("sp");
 }
 
 type Request = {

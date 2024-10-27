@@ -24,14 +24,23 @@ const rules = {
 	version: { match: /(?:HTTP(?:\/1\.0|\/1\.1|\/2|\/3)?)/ },
 	number: /[0-9\.]+/,
 	method: methods,
-	"key-string-text": {
-		match: /(?:[A-Za-z0-9]|"_"|"-"|"."|"[" | "]"|"@"|"$")+/,
-	},
+	colon: ":",
 	status: { match: /[1-5][0-9][0-9]/ },
+	"key-string-escaped-char": {
+		match: /\\(?:#|\\|:|b|f|n|r|t|u(?:\{[0-9A-Fa-f]+\}))/,
+		lineBreaks: true,
+	},
+	"key-string-text": {
+		match: /(?:[A-Za-z0-9]|_|-|\.|\[|\]|@|\$)+/,
+	},
 	"value-string-text": { match: /(?!#\n\\).+/, lineBreaks: true },
+	"value-string-escaped-char": {
+		match: /\\(?:#|\\|b|f|n|r|t|u(?:\{[0-9A-Fa-f]+\}))/,
+		lineBreaks: true,
+	},
 	hexdigit: { match: /[0-9A-Fa-f]/ },
 	LexerError: error,
-} as const satisfies Rules;
+} satisfies Rules;
 
 export type TokenType = keyof typeof rules;
 export type Token = (MooToken & { type?: TokenType }) | undefined;
@@ -56,6 +65,7 @@ export class Tokenizer {
 
 	reset() {
 		this.lexer.reset(this.text);
+		this.token = this.lexer.next() as Token;
 	}
 
 	eat(expected: TokenType): string {
@@ -102,12 +112,8 @@ export class Tokenizer {
 		const token = this.token;
 		this.token = this.lexer.next() as Token;
 
-		if (this.debug && this.token) {
-			console.log(
-				this.token.type,
-				JSON.stringify(this.token.value),
-				this.token.offset,
-			);
+		if (this.debug && token) {
+			console.log(token.type, JSON.stringify(token.value), token.offset);
 		}
 
 		return token as Token;
