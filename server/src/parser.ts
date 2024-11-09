@@ -1,148 +1,207 @@
-import type { Token } from "moo";
-import * as fs from "node:fs";
-import { Tokenizer } from "./hurl/tokenizer";
+import path = require("node:path");
+import fs = require("node:fs");
+import Parser = require("web-tree-sitter");
 
-console.clear();
+let parser: Parser | null = null;
+async function InitTreeSitter() {
+	await Parser.init();
+	parser = new Parser();
+	const langFile = path.join(__dirname, "../", "tree-sitter-hurl.wasm");
+	const Hurl = await Parser.Language.load(langFile);
+	parser.setLanguage(Hurl);
 
-let lexer: Tokenizer;
+	const tree = parser.parse(
+		fs.readFileSync("/home/econn/git/hurl-client/test/grammer.hurl", "ascii"),
+	).rootNode;
 
-main("./test/grammer.hurl");
+	recursiveWalk(tree, 0);
 
-// * = 0 or more
-// + = 1 or more
-// ? = Optional
-// ~ = Not
+	console.log();
 
-function main(file: string) {
-	console.log("\nLexer:");
-	const text = fs.readFileSync(file).toString();
-	lexer = new Tokenizer(text, true);
-	lexer.dump();
-
-	console.log("\nParser:");
-
-	hurlFile();
-
-	console.log("\nParse Finished");
+	entries(tree);
 }
 
-// hurl-file:
-//   lt*
-//   entry*
-//   lt*
-function hurlFile() {
-	//   lt*
-	parseLTStar();
-
-	//   entry*
-	parseEntry();
-
-	//   lt*
-	parseLTStar();
-}
-
-// entry:
-//   request
-//   lt*
-//   response?
-function parseEntry() {
-	//   request
-	const request: Request = parseRequest();
-
-	//   lt*
-	parseLTStar();
-
-	//   response?
-	const response = parseResponse();
-
-	console.log("Result", request, response);
-}
-
-// request:
-//   method sp value-string lt
-//   header*
-//   request-section*
-//   body?
-function parseRequest(): Request {
-	console.log("Parse Request");
-
-	// method sp value-string lt
-	const method = lexer.eat("method");
-	lexer.eatSP();
-	const url = lexer.eat("value-string-text");
-	lexer.eatLT();
-
-	parseHeaders();
-
-	return {
-		method,
-		url,
-		headers: [],
-		requestSection: [],
-	};
-}
-
-// response:
-//   version sp status lt
-//   header*
-//   response-section*
-//   body?
-function parseResponse(): Response | undefined {
-	console.log("Parse Response");
-
-	const peekToken = lexer.peek();
-
-	if (peekToken === undefined) {
-		return undefined;
+function recursiveWalk(tree: Parser.SyntaxNode, depth: number) {
+	const spaces = " ".repeat(depth);
+	for (const node of tree.children) {
+		if (node.type === "\n" || node.type === "lt") {
+			continue;
+		}
+		console.log(spaces + node.type);
+		recursiveWalk(node, depth + 1);
 	}
-
-	if (peekToken?.type !== "version") {
-		throw new Error(
-			`Expected token of type version but got ${peekToken?.type} - "${peekToken.text}"`,
-		);
-	}
-
-	//   version sp status lt
-	const version = lexer.eat("version");
-	lexer.eatSP();
-	const status = lexer.eat("status");
-	lexer.eatLT();
-
-	return {
-		version,
-		status,
-		headers: [],
-		responseSection: [],
-	};
-}
-
-function parseHeaders() {
-	parseLTStar();
-
-	const text = lexer.eat("key-string-text");
-	console.log(text);
-}
-
-function parseLTStar() {
-	while (lexer.tryEat("sp")) {}
-
-	lexer.tryEat("comment");
-
-	lexer.tryEat("sp");
 }
 
 type Request = {
-	method: string;
-	url: string;
-	headers: Token[];
-	requestSection: Token[];
-	body?: Token;
+	method?: string;
+	url?: string;
+	headers: Record<string, string>;
+	requestSections: Record<string, Record<string, string>>;
 };
 
 type Response = {
-	version: string;
-	status: string;
-	headers: Token[];
-	responseSection: Token[];
-	body?: Token;
+	version?: string;
+	status?: string;
+	headers: Record<string, string>;
+	responseSections: Record<string, Record<string, string>>;
 };
+
+type Entry = {
+	request: Request;
+	response?: Response;
+};
+
+function entries(tree: Parser.SyntaxNode) {
+	const entries: Entry[] = [];
+	for (const entry of tree.children) {
+		const request: Request = {
+			headers: {},
+			requestSections: {},
+		};
+
+		const response: Response = {
+			headers: {},
+			responseSections: {},
+		};
+
+		for (const node of entry.children) {
+			// request:
+			//   lt*
+			//   method sp value-string lt
+			//   header*
+			//   request-section*
+			//   body?
+			if (node.type === "request") {
+				for (const reqChild of node.children) {
+					const type = reqChild.type.replace("\n", "\\n");
+
+					if (type === "method") {
+						request.method = reqChild.text;
+					} else if (type === "value_string") {
+						request.url = reqChild.text;
+					} else if (type === "header") {
+						const kv = reqChild.children[0];
+						const key = kv.children[0].text;
+						const value = kv.children[2].text.trim();
+						request.headers[key] = value;
+					} else if (type === "request_section") {
+						parseRequestSection(reqChild, request);
+					} else if (type === "lt") {
+						// comment
+					} else if (type === "\\n") {
+						// newline
+					} else {
+						console.log("Unknown Type:", type);
+					}
+				}
+
+				console.log(request);
+			}
+
+			// response:
+			//   lt*
+			//   version sp status lt
+			//   header*
+			//   response-section*
+			//   body?
+			if (node.type === "response") {
+				for (const reqChild of node.children) {
+					const type = reqChild.type.replace("\n", "\\n");
+
+					if (type === "version") {
+						response.version = reqChild.text;
+					} else if (type === "status") {
+						response.status = reqChild.text;
+					} else if (type === "header") {
+						const kv = reqChild.children[0];
+						const key = kv.children[0].text;
+						const value = kv.children[2].text.trim();
+						response.headers[key] = value;
+					} else if (type === "response_section") {
+						parseResponseSection(reqChild, response);
+					} else if (type === "lt") {
+						// comment
+					} else if (type === "\\n") {
+						// newline
+					} else {
+						console.log("Unknown Type:", type);
+					}
+				}
+
+				console.log(response);
+			}
+		}
+		// return;
+	}
+}
+
+InitTreeSitter();
+
+const RequestSections = [
+	"BasicAuth",
+	"QueryStringParams",
+	"FormParams",
+	"MultipartFormData",
+	"Cookies",
+	"Options",
+];
+
+function parseRequestSection(reqChild: Parser.SyntaxNode, request: Request) {
+	for (const requestSection of reqChild.children) {
+		let sectionName = "";
+		const keys: Record<string, string> = {};
+
+		for (const sectionValue of requestSection.children) {
+			if (sectionValue.type === "\n") {
+				continue;
+			}
+
+			if (RequestSections.includes(sectionValue.type.slice(1, -1))) {
+				sectionName = sectionValue.type.slice(1, -1);
+			}
+
+			if (sectionValue.type === "key_value") {
+				const key = sectionValue.children[0].text;
+				const value = sectionValue.children[2].text.trim();
+				keys[key] = value;
+			}
+		}
+
+		if (sectionName !== "") {
+			request.requestSections[sectionName] = keys;
+		}
+	}
+}
+
+const ResponseSections = ["Captures", "Asserts"];
+
+function parseResponseSection(resChild: Parser.SyntaxNode, response: Response) {
+	for (const requestSection of resChild.children) {
+		let sectionName = "";
+		const keys: Record<string, string> = {};
+
+		for (const sectionValue of requestSection.children) {
+			if (sectionValue.type === "\n") {
+				continue;
+			}
+
+			if (ResponseSections.includes(sectionValue.type.slice(1, -1))) {
+				sectionName = sectionValue.type.slice(1, -1);
+			}
+
+			if (sectionValue.type === "key_value") {
+				const key = sectionValue.children[0].text;
+				const value = sectionValue.children[2].text.trim();
+				keys[key] = value;
+			}
+		}
+
+		if (sectionName !== "") {
+			response.responseSections[sectionName] = keys;
+		}
+	}
+}
+
+function logTypes(node: Parser.SyntaxNode) {
+	console.log(node.children.map((n) => n.type));
+}

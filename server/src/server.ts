@@ -19,6 +19,8 @@ import { spawnSync } from "node:child_process";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { config, defaultSettings, type LspSettings } from "./config";
 import { validateTextDocument } from "./validation";
+import Parser = require("web-tree-sitter");
+import path = require("node:path");
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -61,6 +63,10 @@ connection.onInitialize((params: InitializeParams) => {
 });
 
 connection.onInitialized(() => {
+	console.log("test");
+
+	InitTreeSitter();
+
 	if (config.hasConfigurationCapability) {
 		connection.client.register(
 			DidChangeConfigurationNotification.type,
@@ -124,7 +130,7 @@ documents.onDidChangeContent(({ document }) => {
 });
 
 connection.onDidChangeWatchedFiles((_change) => {
-	console.log(_change);
+	console.log(_change.changes);
 
 	connection.console.log("We received a file change event");
 });

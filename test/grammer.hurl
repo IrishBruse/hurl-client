@@ -1,7 +1,17 @@
-GET http://{{host}}/
-Header1: Value1
-Header2: a\#    # value with \#
-Header3: GET
+# A simple GET with headers
+GET https://example.org/news
+User-Agent: Mozilla/5.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+[QueryStringParams]
+order: newest
+search: something to search
+count: 100
+[Cookies]
+theme: light
+sessionToken: abc123
 
 HTTP/1.1 200
 # HTTP/1.0 200
@@ -12,13 +22,13 @@ HTTP/1.1 200
 body not contains "[Asserts]"
 
 POST http://example.com/
+
+
 {
-"id": {{id}},
-"message": "Hello"
+    "message": "Hello"
 }
 
 POST http://example.com
-```json
 {
     "asd":123,
     "asdas":"123",
@@ -26,4 +36,24 @@ POST http://example.com
 
     }
 }
-```
+HTTP *
+[Captures]
+            test: jsonpath "$.results[0].email"
+
+GET http://localhost:8000/error-assert-variable
+HTTP 200
+[Captures]
+status: status
+length: header "content-length"
+type: header "content-type"
+[Asserts]
+variable "toto" == "tata"
+variable "status" == {{unknown}}
+variable "status" == {{type}}
+variable "status" == {{length}}
+
+
+GET http://localhost:8000/error-assert-variable
+[Options]
+verbose: {{verbose}}
+HTTP 200
