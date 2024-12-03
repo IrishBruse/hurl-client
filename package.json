@@ -23,7 +23,8 @@
     "vscode": "^1.75.0"
   },
   "activationEvents": [
-    "onStartupFinished"
+    "onStartupFinished",
+    "onWebviewPanel:hurlEditor"
   ],
   "main": "./client/out/extension",
   "contributes": {
@@ -77,6 +78,17 @@
           "dark": "assets/langIcon.png",
           "light": "assets/langIcon.png"
         }
+      }
+    ],
+    "customEditors": [
+      {
+        "viewType": "hurl.hurlEditor",
+        "displayName": "Hurl Client",
+        "selector": [
+          {
+            "filenamePattern": "*.hurl"
+          }
+        ]
       }
     ]
   },

@@ -63,8 +63,6 @@ connection.onInitialize((params: InitializeParams) => {
 });
 
 connection.onInitialized(() => {
-	console.log("test");
-
 	InitTreeSitter();
 
 	if (config.hasConfigurationCapability) {
@@ -187,3 +185,7 @@ connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
 
 documents.listen(connection);
 connection.listen();
+
+function InitTreeSitter() {
+	throw new Error("Function not implemented.");
+}

@@ -7,10 +7,13 @@ import {
 	type LanguageClientOptions,
 	type ServerOptions,
 } from "vscode-languageclient/node";
+import { HurlEditorProvider } from "./hurlEditor";
 
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+	context.subscriptions.push(HurlEditorProvider.register(context));
+
 	const serverModule = context.asAbsolutePath(
 		path.join("server", "out", "server.js"),
 	);
