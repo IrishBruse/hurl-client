@@ -25,6 +25,30 @@
       },
       "runOptions": { "runOn": "folderOpen" },
       "problemMatcher": ["$tsc-watch"]
+    },
+    {
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "never"
+      },
+      "path": "hurlEditor",
+      "runOptions": { "runOn": "folderOpen" },
+      "problemMatcher": ["$tsc-watch"]
+    },
+    {
+      "type": "npm",
+      "script": "watch",
+      "isBackground": true,
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "never"
+      },
+      "path": "hurlEditor",
+      "runOptions": { "runOn": "folderOpen" },
+      "problemMatcher": ["$tsc-watch"]
     }
   ]
 }
