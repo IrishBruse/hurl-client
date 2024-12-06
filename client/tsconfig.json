@@ -1,14 +1,15 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es2020",
-		"lib": ["es2020"],
-		"outDir": "out",
-		"rootDir": "src",
-		"sourceMap": true,
-		"incremental": true,
-		"tsBuildInfoFile": "./out/.tsbuildinfo"
-	},
-	"include": ["src"],
-	"exclude": ["node_modules", ".vscode-test"]
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2020",
+    "lib": ["es2020"],
+    "outDir": "out",
+    "rootDir": "src",
+    "sourceMap": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./out/.tsbuildinfo",
+    "types": ["vscode-notebook-renderer"]
+  },
+  "include": ["src", "src/notebook/renderer"],
+  "exclude": ["node_modules", ".vscode-test"]
 }

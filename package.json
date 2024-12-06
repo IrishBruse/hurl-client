@@ -24,7 +24,8 @@
   },
   "activationEvents": [
     "onStartupFinished",
-    "onWebviewPanel:hurlEditor"
+    "onWebviewPanel:hurlEditor",
+    "onNotebook:hurl-notebook-renderer"
   ],
   "main": "./client/out/extension",
   "contributes": {
@@ -80,10 +81,31 @@
         }
       }
     ],
+    "notebookRenderer": [
+      {
+        "id": "notebook-serializer-example",
+        "entrypoint": "./client/out/notebook/renderer/index.js",
+        "displayName": "notebook-serializer-example",
+        "mimeTypes": [
+          "x-application/hurl-renderer"
+        ]
+      }
+    ],
     "customEditors": [
       {
         "viewType": "hurl.hurlEditor",
         "displayName": "Hurl Client",
+        "selector": [
+          {
+            "filenamePattern": "*.hurl"
+          }
+        ]
+      }
+    ],
+    "notebooks": [
+      {
+        "type": "hurl-notebook-renderer",
+        "displayName": "Hurl Notebook",
         "selector": [
           {
             "filenamePattern": "*.hurl"
@@ -106,6 +128,7 @@
     "@types/mocha": "^10.0.6",
     "@types/node": "^18.14.6",
     "@vscode/vsce": "^3.2.0",
+    "@types/vscode-notebook-renderer": "^1.72.3",
     "esbuild": "^0.24.0",
     "mocha": "^10.7.3",
     "typescript": "^5.5.4"

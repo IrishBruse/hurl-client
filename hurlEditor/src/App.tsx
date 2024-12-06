@@ -11,7 +11,7 @@ function App() {
 			<VscodeButton
 				onClick={() => {
 					setValue(20);
-				}}
+				}} 
 			>
 				{value}
 			</VscodeButton>
