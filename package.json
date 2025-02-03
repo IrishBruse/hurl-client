@@ -101,17 +101,6 @@
           }
         ]
       }
-    ],
-    "notebooks": [
-      {
-        "type": "hurl-notebook-renderer",
-        "displayName": "Hurl Notebook",
-        "selector": [
-          {
-            "filenamePattern": "*.hurl"
-          }
-        ]
-      }
     ]
   },
   "scripts": {
