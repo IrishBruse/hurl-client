@@ -1,255 +1,283 @@
 {
-	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"version": "1.0.0",
-	"scopeName": "source.hurl",
-	"uuid": "e1f4f53f-2595-4d92-9431-833a701bd0fd",
-	"information_for_contributors": ["https://hurl.dev/docs/grammar.html"],
-	"patterns": [
-		{
-			"include": "#template"
-		},
-		{
-			"include": "#version"
-		},
-		{
-			"include": "#request"
-		},
-		{
-			"include": "#comment"
-		},
-		{
-			"include": "#section"
-		},
-		{
-			"include": "#operator"
-		},
-		{
-			"include": "#strings"
-		},
-		{
-			"include": "#escape"
-		},
-		{
-			"include": "#query"
-		},
-		{
-			"include": "#header"
-		},
-		{
-			"include": "#predicate-func"
-		},
-		{
-			"include": "#lang"
-		},
-		{
-			"include": "#raw-json"
-		}
-	],
-	"repository": {
-		"escape": {
-			"patterns": [
-				{
-					"comment": "escape hash #",
-					"match": "\\\\[#]",
-					"name": "constant.character.escape.hurl"
-				}
-			]
-		},
-		"template": {
-			"match": "\\{\\{(.*)\\}\\}",
-			"name": "meta.template.hurl",
-			"captures": {
-				"1": {
-					"name": "variable.hurl"
-				}
-			}
-		},
-		"request": {
-			"captures": {
-				"1": {
-					"name": "keyword.hurl"
-				},
-				"2": {
-					"name": "string.other.link.hurl"
-				},
-				"3": {
-					"patterns": [{ "include": "#template" }]
-				},
-				"4": {
-					"name": "string.other.link.hurl"
-				}
-			},
-			"comment": "HTTP request type",
-			"match": "\\s*(GET|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH|LINK|UNLINK|PURGE|LOCK|UNLOCK|PROPFIND|VIEW)\\s([^\\{\\s]*)(\\{\\{.*\\}\\})?(.*)"
-		},
-		"version": {
-			"name": "keyword.hurl",
-			"captures": {
-				"1": {
-					"name": "keyword.control.hurl"
-				},
-				"2": {
-					"name": "punctuation.definition.separator"
-				},
-				"3": {
-					"name": "keyword.control.hurl"
-				},
-				"4": {
-					"name": "constant.hurl"
-				}
-			},
-			"comment": "HTTP Request version",
-			"match": "\\s*(HTTP)(/?)([0-9]\\.?[0-9]?)?\\s([0-9\\*]+)?"
-		},
-		"comment": {
-			"captures": {
-				"1": {
-					"name": "comment.line.number-sign.hurl"
-				},
-				"2": {
-					"name": "punctuation.definition.comment.hurl"
-				}
-			},
-			"comment": "Comments",
-			"match": "((#).*)$"
-		},
-		"section": {
-			"captures": {
-				"1": {
-					"name": "entity.name.type.hurl"
-				}
-			},
-			"comment": "[Section]",
-			"match": "\\[(QueryStringParams|FormParams|MultipartFormData|Cookies|Captures|Asserts|Options)\\]"
-		},
-		"operator": {
-			"captures": {
-				"1": {
-					"name": "keyword.operator.comparison.hurl"
-				}
-			},
-			"comment": "operator",
-			"match": "(==|!=|>|>=|<|<=|not)"
-		},
-		"query": {
-			"match": "\\s*(status|url|header|cookie|body|jsonpath|xpath|regex|variable|duration|sha256|md5|bytes)\\s",
-			"captures": {
-				"1": {
-					"name": "support.function.hurl"
-				}
-			}
-		},
-		"predicate-func": {
-			"match": "\\s*(startsWith|endsWith|contains|matches|exists|isEmpty|includes|isInteger|isFloat|isBoolean|isString|isCollection|isDate|isIsoDate)\\s",
-			"captures": {
-				"1": {
-					"name": "support.function.hurl"
-				}
-			}
-		},
-		"header": {
-			"match": "\\s*(\\w+)(:)\\s",
-			"captures": {
-				"1": {
-					"name": "support.type.property-name.hurl"
-				},
-				"2": {
-					"name": "punctuation.separator.hurl"
-				}
-			}
-		},
-		"strings": {
-			"comment": "double quote string",
-			"begin": "\"",
-			"end": "\"",
-			"name": "string.quoted.double.hurl",
-			"patterns": [
-				{
-					"comment": "Quad backslash required to match one literal backslash",
-					"match": "\\\\.",
-					"name": "constant.character.escape.hurl"
-				}
-			]
-		},
-		"lang": {
-			"comment": "fenced block",
-			"name": "meta.embedded",
-			"patterns": [
-				{
-					"begin": "```(base64)",
-					"beginCaptures": {
-						"1": { "name": "fenced_code.block.language" }
-					},
-					"end": "```",
-					"patterns": [
-						{
-							"include": "source.base64"
-						}
-					]
-				},
-				{
-					"begin": "```(hex)",
-					"beginCaptures": {
-						"1": { "name": "fenced_code.block.language" }
-					},
-					"end": "```",
-					"patterns": [
-						{
-							"include": "source.hex"
-						}
-					]
-				},
-				{
-					"begin": "```(json)",
-					"beginCaptures": {
-						"1": { "name": "fenced_code.block.language" }
-					},
-					"end": "```",
-					"patterns": [
-						{
-							"include": "source.json"
-						}
-					]
-				},
-				{
-					"begin": "```(xml)",
-					"beginCaptures": {
-						"1": { "name": "fenced_code.block.language" }
-					},
-					"end": "```",
-					"patterns": [
-						{
-							"include": "source.xml"
-						}
-					]
-				},
-				{
-					"begin": "```(graphql)",
-					"beginCaptures": {
-						"1": { "name": "fenced_code.block.language" }
-					},
-					"end": "```",
-					"patterns": [
-						{
-							"include": "source.graphql"
-						}
-					]
-				}
-			]
-		},
-		"raw-json": {
-			"comment": "fenced block",
-			"begin": "{^{",
-			"end": "}",
-			"name": "meta.embedded.block.json source.json",
-			"patterns": [
-				{
-					"include": "#template"
-				},
-				{
-					"include": "source.json"
-				}
-			]
-		}
-	}
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "version": "1.0.0",
+  "scopeName": "source.hurl",
+  "uuid": "e1f4f53f-2595-4d92-9431-833a701bd0fd",
+  "information_for_contributors": ["https://hurl.dev/docs/grammar.html"],
+  "patterns": [
+    { "include": "#template" },
+    { "include": "#version" },
+    { "include": "#request" },
+    { "include": "#comment" },
+    { "include": "#section" },
+    { "include": "#operator" },
+    { "include": "#number" },
+    { "include": "#string-double" },
+    { "include": "#string-single" },
+    { "include": "#string-backtick" },
+    { "include": "#escape" },
+    { "include": "#query" },
+    { "include": "#booleans" },
+    { "include": "#header" },
+    { "include": "#predicate-func" },
+    { "include": "#lang" },
+    { "include": "#raw-json" }
+  ],
+  "repository": {
+    "escape": {
+      "patterns": [
+        {
+          "comment": "escape hash #",
+          "match": "\\\\[#]",
+          "name": "constant.character.escape.hurl"
+        }
+      ]
+    },
+    "template": {
+      "match": "\\{\\{(.*)\\}\\}",
+      "name": "meta.template.hurl",
+      "captures": {
+        "1": {
+          "name": "variable.hurl"
+        }
+      }
+    },
+    "request": {
+      "captures": {
+        "1": {
+          "name": "keyword.hurl"
+        },
+        "2": {
+          "name": "string.other.link.hurl"
+        },
+        "3": {
+          "patterns": [{ "include": "#template" }]
+        },
+        "4": {
+          "name": "string.other.link.hurl"
+        }
+      },
+      "comment": "HTTP request type",
+      "match": "\\s*(GET|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH|LINK|UNLINK|PURGE|LOCK|UNLOCK|PROPFIND|VIEW)\\s([^\\{\\s]*)(\\{\\{.*\\}\\})?(.*)"
+    },
+    "version": {
+      "name": "keyword.hurl",
+      "captures": {
+        "1": {
+          "name": "keyword.control.hurl"
+        },
+        "2": {
+          "name": "punctuation.definition.separator"
+        },
+        "3": {
+          "name": "keyword.control.hurl"
+        },
+        "4": {
+          "name": "constant.hurl"
+        }
+      },
+      "comment": "HTTP Request version",
+      "match": "\\s*(HTTP)(/?)([0-9]\\.?[0-9]?)?\\s([0-9\\*]+)?"
+    },
+    "comment": {
+      "captures": {
+        "1": {
+          "name": "comment.line.number-sign.hurl"
+        },
+        "2": {
+          "name": "punctuation.definition.comment.hurl"
+        }
+      },
+      "comment": "Comments",
+      "match": "((#).*)$"
+    },
+    "booleans": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.hurl",
+          "match": "\\b(?:true|false)\\b"
+        }
+      ]
+    },
+    "section": {
+      "captures": {
+        "1": {
+          "name": "entity.name.type.hurl"
+        }
+      },
+      "comment": "[Section]",
+      "match": "\\[(QueryStringParams|Query|FormParams|Form|MultipartFormData|Multipart|Cookies|BasicAuth|Captures|Asserts|Options)\\]"
+    },
+    "number": {
+      "patterns": [
+        {
+          "name": "constant.numeric.hex.hurl",
+          "match": "\\b0[xX][0-9a-fA-F]+\\b"
+        },
+        {
+          "name": "constant.numeric.float.hurl",
+          "match": "\\b\\d+\\.\\d+([eE][+-]?\\d+)?\\b"
+        },
+        {
+          "name": "constant.numeric.integer.hurl",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "operator": {
+      "captures": {
+        "1": {
+          "name": "keyword.operator.comparison.hurl"
+        }
+      },
+      "comment": "operator",
+      "match": "(==|!=|>|>=|<|<=|not)"
+    },
+    "query": {
+      "match": "^(status|url|header|cookie|body|jsonpath|xpath|regex|variable|duration|sha256|md5|bytes)\\s",
+      "captures": {
+        "1": {
+          "name": "support.function.hurl"
+        }
+      }
+    },
+    "predicate-func": {
+      "match": "\\s*(startsWith|endsWith|contains|matches|exists|isEmpty|includes|isInteger|isFloat|isBoolean|isString|isCollection|isDate|isIsoDate)\\s",
+      "captures": {
+        "1": {
+          "name": "support.function.hurl"
+        }
+      }
+    },
+    "header": {
+      "match": "^([-\\w\\.]+)(:)\\s",
+      "captures": {
+        "1": {
+          "name": "support.type.property-name.hurl"
+        },
+        "2": {
+          "name": "punctuation.separator.hurl"
+        }
+      }
+    },
+    "string-double": {
+      "comment": "double quote string",
+      "begin": "\"",
+      "end": "\"",
+      "name": "string.quoted.double.hurl",
+      "patterns": [
+        {
+          "comment": "Quad backslash required to match one literal backslash",
+          "match": "\\\\.",
+          "name": "constant.character.escape.hurl"
+        }
+      ]
+    },
+    "string-single": {
+      "comment": "single quote string",
+      "begin": "'",
+      "end": "'",
+      "name": "string.quoted.double.hurl",
+      "patterns": [
+        {
+          "comment": "Quad backslash required to match one literal backslash",
+          "match": "\\\\.",
+          "name": "constant.character.escape.hurl"
+        }
+      ]
+    },
+    "string-backtick": {
+      "comment": "back tick string",
+      "begin": "`",
+      "end": "`",
+      "name": "string.quoted.double.hurl",
+      "patterns": [
+        {
+          "comment": "Quad backslash required to match one literal backslash",
+          "match": "\\\\.",
+          "name": "constant.character.escape.hurl"
+        }
+      ]
+    },
+    "lang": {
+      "comment": "fenced block",
+      "name": "meta.embedded",
+      "patterns": [
+        {
+          "begin": "```(base64)",
+          "beginCaptures": {
+            "1": { "name": "fenced_code.block.language" }
+          },
+          "end": "```",
+          "patterns": [
+            {
+              "include": "source.base64"
+            }
+          ]
+        },
+        {
+          "begin": "```(hex)",
+          "beginCaptures": {
+            "1": { "name": "fenced_code.block.language" }
+          },
+          "end": "```",
+          "patterns": [
+            {
+              "include": "source.hex"
+            }
+          ]
+        },
+        {
+          "begin": "```(json)",
+          "beginCaptures": {
+            "1": { "name": "fenced_code.block.language" }
+          },
+          "end": "```",
+          "patterns": [
+            {
+              "include": "source.json"
+            }
+          ]
+        },
+        {
+          "begin": "```(xml)",
+          "beginCaptures": {
+            "1": { "name": "fenced_code.block.language" }
+          },
+          "end": "```",
+          "patterns": [
+            {
+              "include": "source.xml"
+            }
+          ]
+        },
+        {
+          "begin": "```(graphql)",
+          "beginCaptures": {
+            "1": { "name": "fenced_code.block.language" }
+          },
+          "end": "```",
+          "patterns": [
+            {
+              "include": "source.graphql"
+            }
+          ]
+        }
+      ]
+    },
+    "raw-json": {
+      "comment": "fenced block",
+      "begin": "{^{",
+      "end": "}",
+      "name": "meta.embedded.block.json source.json",
+      "patterns": [
+        {
+          "include": "#template"
+        },
+        {
+          "include": "source.json"
+        }
+      ]
+    }
+  }
 }

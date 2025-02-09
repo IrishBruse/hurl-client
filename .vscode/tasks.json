@@ -12,6 +12,7 @@
       "problemMatcher": ["$tsc"]
     },
     {
+      "label": "Watch Extension",
       "type": "npm",
       "script": "watch",
       "isBackground": true,
@@ -39,6 +40,7 @@
       "problemMatcher": ["$tsc-watch"]
     },
     {
+      "label": "Watch Hurl Editor",
       "type": "npm",
       "script": "watch",
       "isBackground": true,

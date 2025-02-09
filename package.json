@@ -110,19 +110,18 @@
     "lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
     "test": "sh ./scripts/e2e.sh",
-    "vsce": "vsce",
-    "prepublish": "vsce login irishbruse"
+    "login": "vsce login irishbruse"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "^18.14.6",
     "@vscode/vsce": "^3.2.0",
-    "@types/vscode-notebook-renderer": "^1.72.3",
     "esbuild": "^0.24.0",
     "mocha": "^10.7.3",
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "hurl-js-parser": "file:../hurl-js-parser",
     "vscode-uri": "^3.0.8"
   }
 }

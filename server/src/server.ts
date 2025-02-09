@@ -19,8 +19,6 @@ import { spawnSync } from "node:child_process";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { config, defaultSettings, type LspSettings } from "./config";
 import { validateTextDocument } from "./validation";
-import Parser = require("web-tree-sitter");
-import path = require("node:path");
 
 const connection = createConnection(ProposedFeatures.all);
 

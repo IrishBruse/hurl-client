@@ -6,7 +6,12 @@ export class HurlEditorProvider implements vscode.CustomTextEditorProvider {
 		const providerRegistration = vscode.window.registerCustomEditorProvider(
 			HurlEditorProvider.viewType,
 			provider,
-			{ webviewOptions: { enableFindWidget: true } },
+			{
+				webviewOptions: {
+					enableFindWidget: true,
+					retainContextWhenHidden: true,
+				},
+			},
 		);
 		return providerRegistration;
 	}
@@ -76,13 +81,6 @@ function getReactEntry(
 	webview: vscode.Webview,
 	extensionUri: vscode.Uri,
 ): string {
-	// The CSS file from the React build output
-	const stylesUri = getUri(webview, extensionUri, [
-		"hurlEditor",
-		"build",
-		"assets",
-		"index.css",
-	]);
 	// The JS file from the React build output
 	const scriptUri = getUri(webview, extensionUri, [
 		"hurlEditor",
@@ -98,7 +96,6 @@ function getReactEntry(
         <head>
           <meta charset="UTF-8" />
           <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
-          <link rel="stylesheet" type="text/css" href="${stylesUri}">
         </head>
         <body>
           <div id="root"></div>

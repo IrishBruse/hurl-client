@@ -7,9 +7,7 @@
     "rootDir": "src",
     "sourceMap": true,
     "incremental": true,
-    "tsBuildInfoFile": "./out/.tsbuildinfo",
-    "types": ["vscode-notebook-renderer"]
+    "tsBuildInfoFile": "./out/.tsbuildinfo"
   },
-  "include": ["src", "src/notebook/renderer"],
-  "exclude": ["node_modules", ".vscode-test"]
+  "include": ["src"]
 }
