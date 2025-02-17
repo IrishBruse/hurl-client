@@ -1,33 +1,36 @@
 {
-  "name": "hurleditor",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "watch": "tsc -b && vite build --watch",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@vscode-elements/react-elements": "^0.8.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.15.0",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "@types/vscode-webview": "^1.57.5",
-    "@vitejs/plugin-react": "^4.3.4",
-    "@vscode-elements/webview-playground": "^1.3.0",
-    "eslint": "^9.15.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.14",
-    "globals": "^15.12.0",
-    "typescript": "~5.6.2",
-    "typescript-eslint": "^8.15.0",
-    "vite": "^6.0.1"
-  }
+    "name": "hurleditor",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "node esbuild.js",
+        "watch": "node --watch esbuild.js",
+        "lint": "eslint .",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@vscode-elements/elements": "^1.13.1",
+        "hurl-js-parser": "file:../../hurl-js-parser",
+        "react": "19.0.0",
+        "react-dom": "19.0.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.15.0",
+        "@types/react": "19.0.9",
+        "@types/react-dom": "19.0.3",
+        "@types/vscode-webview": "^1.57.5",
+        "@vitejs/plugin-react": "^4.3.4",
+        "@vscode-elements/webview-playground": "^1.3.0",
+        "esbuild": "^0.25.0",
+        "eslint": "^9.15.0",
+        "eslint-plugin-react-hooks": "^5.0.0",
+        "eslint-plugin-react-refresh": "^0.4.14",
+        "globals": "^15.12.0",
+        "typescript": "~5.6.2",
+        "typescript-eslint": "^8.15.0",
+        "vite": "^6.0.1",
+        "vite-plugin-bundle-analyzer": "^0.0.1"
+    }
 }
