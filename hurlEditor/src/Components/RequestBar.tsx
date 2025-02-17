@@ -34,8 +34,8 @@ export function RequestBar({ request }: { request: Request }) {
                 gap: "6px",
                 padding: "1rem",
             }}>
-            <Select value={method} onChange={changeMethod} options={methods} style={{ width: "100px" }}></Select>
-            <TextField value={url} onInput={changeUrl as any} style={{ width: "100%" }} />
+            <Select defaultValue={method} onChange={changeMethod} options={methods} style={{ width: "100px" }}></Select>
+            <TextField value={url} onChange={changeUrl as any} style={{ width: "100%" }} />
             <vscode-button
                 onClick={() => {
                     //

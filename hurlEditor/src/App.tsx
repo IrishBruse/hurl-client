@@ -1,14 +1,14 @@
 import { RequestBar } from "./Components/RequestBar";
 import { useEffect, useState } from "react";
 import { SplitPane } from "./VSCode/SplitPane";
+import { Method } from "hurl-js-parser/types";
 
 const vscode = window.acquireVsCodeApi();
 
 function App() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [req, setReq] = useState<any>({
+    const [hurl, setHurl] = useState({
         request: {
-            method: "GET",
+            method: "GET" as Method,
             url: "",
         },
     });
@@ -22,9 +22,11 @@ function App() {
             console.log("React received message:", event.data);
             if (event.data.type === "update") {
                 // Assume event.data.text contains the new request data
-                setReq({
-                    method: "GET",
-                    url: "",
+                setHurl({
+                    request: {
+                        method: "GET",
+                        url: "",
+                    },
                 });
             }
         };
@@ -36,7 +38,7 @@ function App() {
     return (
         <SplitPane initialWidth={window.innerWidth / 2} minLeft={200} minRight={200}>
             <div>
-                <RequestBar request={req} />
+                <RequestBar request={hurl.request} />
                 <vscode-tabs panel>
                     <vscode-tab-header slot="header">Params</vscode-tab-header>
                     <vscode-tab-panel style={{ margin: "0 1rem" }}>A</vscode-tab-panel>

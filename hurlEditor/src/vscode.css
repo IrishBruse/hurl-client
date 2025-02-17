@@ -43,7 +43,13 @@ body {
     display: inline-block;
 }
 
+.select-dropdown.open {
+    display: block;
+}
+
 .select-dropdown {
+    display: none;
+
     cursor: pointer;
     line-height: 1.4em;
     position: absolute;
