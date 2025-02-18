@@ -3,6 +3,7 @@ import type { Method, Request } from "hurl-js-parser/types";
 import { useState } from "react";
 import { Select } from "../VSCode/Select";
 import { TextField } from "../VSCode/Textfield";
+import { Button } from "../VSCode/Button";
 
 const methods = [
     { value: "GET", label: "GET", style: { color: "skyblue" } },
@@ -24,24 +25,21 @@ export function RequestBar({ request }: { request: Request }) {
         setUrl(e.target?.value);
     };
 
-    console.log(method);
-
     return (
         <span
             style={{
                 display: "flex",
-                alignItems: "center",
                 gap: "6px",
                 padding: "1rem",
             }}>
             <Select defaultValue={method} onChange={changeMethod} options={methods} style={{ width: "100px" }}></Select>
-            <TextField value={url} onChange={changeUrl as any} style={{ width: "100%" }} />
-            <vscode-button
+            <TextField value={url} onChange={changeUrl as any} placeholder="https://example.com/api/v1" style={{ width: "100%", minWidth: "200px" }} />
+            <Button
                 onClick={() => {
-                    //
+                    console.log("Click");
                 }}>
                 Send
-            </vscode-button>
+            </Button>
         </span>
     );
 }

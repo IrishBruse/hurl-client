@@ -1,0 +1,31 @@
+.tabs {
+    display: flex;
+    align-items: center;
+    text-wrap: nowrap;
+    text-transform: uppercase;
+    white-space-collapse: collapse;
+
+    padding: 0;
+    margin: 0 0.5rem;
+}
+
+.tabsHeader {
+    display: flex;
+    padding: 2px 10px;
+
+    color: var(--vscode-panelTitle-inactiveForeground);
+}
+
+.tabsLink {
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+}
+
+.tabsLink.checked {
+    color: var(--vscode-panelTitle-activeForeground);
+    border-bottom: 1px solid var(--vscode-panelTitle-activeBorder);
+}
+
+.tabsContent {
+    margin: 0.5rem 1rem;
+}

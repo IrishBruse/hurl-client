@@ -786,6 +786,11 @@ body {
     font-family: var(--vscode-font-family);
     font-weight: var(--vscode-font-weight);
     font-size: var(--vscode-font-size);
-    margin: 0;
-    padding: 0 20px;
+
+    font-size: 13px;
+    line-height: 1.4em;
+}
+
+* {
+    font-family: var(--vscode-font-family);
 }

@@ -4,19 +4,17 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hurl Editor</title>
-        <script src="node_modules/@vscode-elements/elements/dist/bundled.js" type="module"></script>
+        <!-- <script src="node_modules/@vscode-elements/elements/dist/bundled.js" type="module"></script> -->
         <script>
             window.acquireVsCodeApi = () => ({
                 postMessage: () => {},
             });
         </script>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-        <!-- <script type="module" src="node_modules/@vscode-elements/webview-playground/dist/index.js"></script> -->
         <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
         <div id="root"></div>
-        <!-- <vscode-dev-toolbar /> -->
+        <vscode-dev-toolbar />
         <script type="module" src="src/main.tsx"></script>
     </body>
 </html>

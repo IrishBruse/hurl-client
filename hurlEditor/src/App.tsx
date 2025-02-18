@@ -2,6 +2,7 @@ import { RequestBar } from "./Components/RequestBar";
 import { useEffect, useState } from "react";
 import { SplitPane } from "./VSCode/SplitPane";
 import { Method } from "hurl-js-parser/types";
+import { Tabs } from "./VSCode/Tabs";
 
 const vscode = window.acquireVsCodeApi();
 
@@ -39,16 +40,12 @@ function App() {
         <SplitPane initialWidth={window.innerWidth / 2} minLeft={200} minRight={200}>
             <div>
                 <RequestBar request={hurl.request} />
-                <vscode-tabs panel>
-                    <vscode-tab-header slot="header">Params</vscode-tab-header>
-                    <vscode-tab-panel style={{ margin: "0 1rem" }}>A</vscode-tab-panel>
-                    <vscode-tab-header slot="header">Body</vscode-tab-header>
-                    <vscode-tab-panel style={{ margin: "0 1rem" }}>B</vscode-tab-panel>
-                    <vscode-tab-header slot="header">Header</vscode-tab-header>
-                    <vscode-tab-panel style={{ margin: "0 1rem" }}>C</vscode-tab-panel>
-                    <vscode-tab-header slot="header">Auth</vscode-tab-header>
-                    <vscode-tab-panel style={{ margin: "0 1rem" }}>D</vscode-tab-panel>
-                </vscode-tabs>
+                <Tabs tabs={["Params", "Body", "Header", "Auth"]}>
+                    <div>A</div>
+                    <div>B</div>
+                    <div>C</div>
+                    <div>D</div>
+                </Tabs>
             </div>
             <div style={{ margin: "1.5rem 1rem" }}>test</div>
         </SplitPane>

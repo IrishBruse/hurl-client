@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, FC, ReactElement } from "react";
+import styles from "./SplitPane.module.css";
 
 type SplitPaneProps = {
     initialWidth: number;
@@ -8,7 +9,7 @@ type SplitPaneProps = {
 };
 
 export const SplitPane: FC<SplitPaneProps> = ({ initialWidth: initialLeftWidth, minLeft, minRight, children }) => {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null!);
     const [leftWidth, setLeftWidth] = useState(initialLeftWidth);
     const dragging = useRef(false);
 
@@ -65,7 +66,13 @@ export const SplitPane: FC<SplitPaneProps> = ({ initialWidth: initialLeftWidth, 
                 position: "relative",
             }}>
             <div style={{ width: leftWidth, overflow: "auto" }}>{children[0]}</div>
-            <div className="sash vertical" onMouseDown={onMouseDown} />
+            <div
+                className={styles.sash + " " + styles.vertical}
+                onMouseDown={onMouseDown}
+                onDoubleClick={() => {
+                    setLeftWidth(containerRef.current.clientWidth / 2);
+                }}
+            />
             <div style={{ flex: 1, overflow: "auto" }}>{children[1]}</div>
         </div>
     );

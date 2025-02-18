@@ -1,4 +1,5 @@
 import { CSSProperties, FunctionComponent, useRef, useState } from "react";
+import styles from "./Select.module.css";
 
 type Option = {
     value: string;
@@ -26,11 +27,11 @@ export const Select: FunctionComponent<SelectProps> = ({ defaultValue, onChange,
     };
 
     return (
-        <div className="select" ref={containerRef} tabIndex={0} onBlur={handleBlur}>
-            <button className="select-input" onClick={() => setOpen((val) => !val)} style={style}>
+        <div className={styles.select} ref={containerRef} tabIndex={0} onBlur={handleBlur}>
+            <button className={styles.selectInput} onClick={() => setOpen((val) => !val)} style={style}>
                 <div style={options.find((o) => o.value === value)?.style}>{value}</div>
             </button>
-            <div className={"select-dropdown" + (open ? "  open" : "")} onBlur={() => console.log("Blur Dropdown")}>
+            <div className={styles.selectDropdown + (open ? " " + styles.open : "")} onBlur={() => console.log("Blur Dropdown")}>
                 {options.map(({ label, value, style }) => {
                     return (
                         <option
@@ -46,6 +47,9 @@ export const Select: FunctionComponent<SelectProps> = ({ defaultValue, onChange,
                     );
                 })}
             </div>
+            <svg className={styles.selectArrow} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+            </svg>
         </div>
     );
 };

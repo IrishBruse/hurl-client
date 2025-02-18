@@ -1,0 +1,25 @@
+.sash.vertical {
+    width: 4px;
+    cursor: col-resize;
+    background-color: transparent;
+
+    position: relative;
+
+    transition: background-color 0.1s ease-out 0.1s;
+}
+
+.sash.vertical::before {
+    width: 1px;
+    display: block;
+    position: absolute;
+    height: 100%;
+    content: "";
+    left: 2px;
+    background-color: var(--vscode-panel-border);
+    z-index: -1;
+}
+
+.sash.vertical:hover,
+.sash.vertical:active {
+    background-color: var(--vscode-focusBorder);
+}

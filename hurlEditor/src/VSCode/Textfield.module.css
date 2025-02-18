@@ -1,0 +1,19 @@
+.textfield:focus {
+    outline-width: 1px;
+    outline-color: var(--vscode-focusBorder);
+    outline-style: solid;
+    outline-offset: -1px;
+}
+
+.textfield {
+    padding: 4px 6px;
+
+    border: solid 1px var(--vscode-input-border);
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border-radius: 2px;
+}
+
+.textfield::placeholder {
+    color: var(--vscode-input-placeholderForeground);
+}
