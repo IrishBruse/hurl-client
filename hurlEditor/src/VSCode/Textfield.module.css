@@ -6,6 +6,8 @@
 }
 
 .textfield {
+    width: 100%;
+
     padding: 4px 6px;
 
     border: solid 1px var(--vscode-input-border);

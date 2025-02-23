@@ -1,8 +1,8 @@
 .one-dark-theme {
-    --vscode-font-family: Cascadia Code;
+    --vscode-font-family: system-ui, Ubuntu, "Droid Sans", sans-serif;
     --vscode-font-weight: normal;
     --vscode-font-size: 13px;
-    --vscode-editor-font-family: Cascadia Code;
+    --vscode-editor-font-family: system-ui, Ubuntu, "Droid Sans", sans-serif;
     --vscode-editor-font-weight: normal;
     --vscode-editor-font-size: 12px;
     --text-link-decoration: none;
@@ -769,13 +769,7 @@
     --vscode-markdown-extension\.editor\.trailingSpace\.background: rgba(204, 204, 204, 0.2);
 }
 
-@font-face {
-    font-family: "Cascadia Code";
-    src: url(./CascadiaCode.ttf);
-}
-
 html {
-    font-family: Cascadia Code;
     background-color: var(--vscode-editor-background);
 }
 body {
@@ -789,8 +783,4 @@ body {
 
     font-size: 13px;
     line-height: 1.4em;
-}
-
-* {
-    font-family: var(--vscode-font-family);
 }

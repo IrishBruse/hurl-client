@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { SplitPane } from "./VSCode/SplitPane";
 import { Method } from "hurl-js-parser/types";
 import { Tabs } from "./VSCode/Tabs";
+import { KeyValueTable } from "./VSCode/KeyValueTable";
 
 const vscode = window.acquireVsCodeApi();
 
@@ -37,11 +38,13 @@ function App() {
     }, []);
 
     return (
-        <SplitPane initialWidth={window.innerWidth / 2} minLeft={200} minRight={200}>
+        <SplitPane initialWidth={window.innerWidth / 2} minLeft={250} minRight={200}>
             <div>
                 <RequestBar request={hurl.request} />
                 <Tabs tabs={["Params", "Body", "Header", "Auth"]}>
-                    <div>A</div>
+                    <div>
+                        <KeyValueTable initialData={{ key: "value", bazz: "123" }}></KeyValueTable>
+                    </div>
                     <div>B</div>
                     <div>C</div>
                     <div>D</div>

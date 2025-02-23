@@ -5,8 +5,9 @@ type TextFieldProps = {
     style?: CSSProperties;
     onChange: ChangeEventHandler<HTMLInputElement>;
     placeholder: string;
+    autoFocus?: boolean;
 };
 
-export const TextField: FunctionComponent<TextFieldProps> = ({ value, style, placeholder, onChange }) => {
-    return <input className={styles.textfield} value={value} onChange={onChange} placeholder={placeholder} style={style}></input>;
+export const TextField: FunctionComponent<TextFieldProps> = ({ value, style, placeholder, autoFocus, onChange }) => {
+    return <input className={styles.textfield} value={value} onChange={onChange} placeholder={placeholder} autoFocus={autoFocus} style={style}></input>;
 };
