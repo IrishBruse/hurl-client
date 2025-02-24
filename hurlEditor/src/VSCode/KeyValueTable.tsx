@@ -1,85 +1,131 @@
-import { CSSProperties, FC, FocusEventHandler, useState } from "react";
+import { CSSProperties, FC, FocusEventHandler, useEffect, useState } from "react";
 import styles from "./KeyValueTable.module.css";
 import { Button } from "./Button";
 import { TextField } from "./Textfield";
 
+type Row = {
+    key: string;
+    value: string;
+};
+
 type KeyValueTableProps = {
     initialData: Record<string, string>;
+    onChange: (value: Record<string, string>) => void;
     style?: CSSProperties;
 };
 
-export const KeyValueTable: FC<KeyValueTableProps> = ({ initialData }) => {
-    const [data, setData] = useState<Record<string, string>>(initialData);
+export const KeyValueTable: FC<KeyValueTableProps> = ({ initialData, onChange }) => {
+    const [rows, setRows] = useState<Row[]>(() => Object.entries(initialData).map(([k, v]) => ({ key: k, value: v })));
     const [editingKey, setEditingKey] = useState<string | null>(null);
     const [editingCol, setEditingCol] = useState<number>(0);
 
-    const onBlur: FocusEventHandler<HTMLDivElement> = (e) => {
-        if (!e.currentTarget?.parentNode?.contains(e.relatedTarget)) {
+    useEffect(() => {
+        const changed = {} as Record<string, string>;
+
+        for (const element of rows) {
+            changed[element.key] = element.value;
+        }
+
+        onChange(changed);
+    }, [rows]);
+
+    const onBlurHandler: FocusEventHandler<HTMLTableRowElement> = (e) => {
+        if (!e.currentTarget.parentNode?.contains(e.relatedTarget)) {
             setEditingKey(null);
             setEditingCol(0);
         }
     };
 
-    const editKey = (newValue: string, key: string) => {
-        if (newValue !== key && newValue !== "") {
-            setData((prev) => {
-                const newData: Record<string, string> = {};
-                for (const [k, v] of Object.entries(prev)) {
-                    if (k === key) {
-                        newData[newValue] = v;
-                    } else {
-                        newData[k] = v;
-                    }
-                }
-                return newData;
+    const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+        e.dataTransfer.setData("drag-index", index.toString());
+        e.dataTransfer.effectAllowed = "move";
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLTableRowElement>, dropIndex: number) => {
+        e.preventDefault();
+        const dragIndexStr = e.dataTransfer.getData("drag-index");
+        const dragIndex = Number(dragIndexStr);
+        if (isNaN(dragIndex)) {
+            return;
+        }
+        setRows((prev) => {
+            const newRows = [...prev];
+            const [draggedItem] = newRows.splice(dragIndex, 1);
+            newRows.splice(dropIndex, 0, draggedItem);
+            return newRows;
+        });
+    };
+
+    const editKey = (newValue: string, index: number) => {
+        if (newValue !== rows[index].key && newValue !== "") {
+            setRows((prev) => {
+                const newRows = [...prev];
+                newRows[index] = { ...newRows[index], key: newValue };
+                return newRows;
             });
             setEditingKey(newValue);
         }
     };
 
+    const editValue = (newValue: string, index: number) => {
+        setRows((prev) => {
+            const newRows = [...prev];
+            newRows[index] = { ...newRows[index], value: newValue };
+            return newRows;
+        });
+    };
+
     return (
         <>
             <table className={styles.table}>
-                <tbody>
+                <thead>
                     <tr className={styles.row}>
                         <th className={styles.header}>Key</th>
                         <th className={styles.header}>Value</th>
                     </tr>
-                    {Object.entries(data).map(([key, value]) => (
+                </thead>
+                <tbody>
+                    {rows.map((row, index) => (
                         <tr
+                            key={row.key || index}
                             className={styles.row}
-                            key={key}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, index)}
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => handleDrop(e, index)}
                             onBlur={(e) => {
-                                onBlur(e);
-                                if (key === "") {
-                                    const newData = { ...data };
-                                    delete newData[""];
-                                    setData(newData);
+                                onBlurHandler(e);
+                                // If the key is empty when losing focus, remove the row.
+                                if (row.key === "") {
+                                    setRows((prev) => prev.filter((_, i) => i !== index));
                                 }
                             }}>
                             <EditableCell
                                 className={styles.key}
-                                value={key}
-                                onChange={(newValue) => editKey(newValue, key)}
+                                value={row.key}
+                                onChange={(newValue) => editKey(newValue, index)}
                                 onDoubleClick={() => {
-                                    setEditingKey(key);
+                                    setEditingKey(row.key);
                                     setEditingCol(0);
                                 }}
-                                editing={editingKey === key && editingCol === 0}
-                                focus={editingKey === key && editingCol === 0}
+                                editing={editingKey === row.key && editingCol === 0}
+                                focus={editingKey === row.key && editingCol === 0}
                             />
                             <EditableCell
                                 className={styles.value}
-                                value={value}
-                                onChange={(newValue) => {
-                                    setData((prev) => ({ ...prev, [key]: newValue }));
-                                }}
+                                value={row.value}
+                                onChange={(newValue) => editValue(newValue, index)}
                                 onDoubleClick={() => {
-                                    setEditingKey(key);
+                                    setEditingKey(row.key);
                                     setEditingCol(1);
                                 }}
-                                editing={editingKey === key && editingCol === 1}
-                                focus={editingKey === key && editingCol === 1}
+                                editing={editingKey === row.key && editingCol === 1}
+                                focus={editingKey === row.key && editingCol === 1}
                             />
                         </tr>
                     ))}
@@ -88,7 +134,7 @@ export const KeyValueTable: FC<KeyValueTableProps> = ({ initialData }) => {
             <Button
                 style={{ padding: "2px 14px", marginTop: "12px" }}
                 onClick={() => {
-                    setData((prev) => ({ ...prev, "": "" }));
+                    setRows((prev) => [...prev, { key: "", value: "" }]);
                     setEditingKey("");
                     setEditingCol(0);
                 }}>
@@ -107,7 +153,7 @@ type EditableCellProps = {
     onDoubleClick: () => void;
 };
 
-const EditableCell: React.FC<EditableCellProps> = ({ value, onChange, className, editing, focus, onDoubleClick }) => {
+const EditableCell: FC<EditableCellProps> = ({ value, onChange, className, editing, focus, onDoubleClick }) => {
     return (
         <td onDoubleClick={onDoubleClick} className={className}>
             {editing ? (

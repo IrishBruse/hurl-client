@@ -47,7 +47,7 @@ function App() {
                 <RequestBar request={hurl.request} />
                 <Tabs tabs={["Params", "Body", "Header", "Auth"]}>
                     <div>
-                        <KeyValueTable initialData={{ key: "value", bazz: "123" }}></KeyValueTable>
+                        <KeyValueTable initialData={{ key: "value", bazz: "123" }} onChange={() => {}}></KeyValueTable>
                     </div>
                     <div>B</div>
                     <div>C</div>
