@@ -8,7 +8,7 @@
 .textfield {
     width: 100%;
 
-    padding: 4px 6px;
+    line-height: normal;
 
     border: solid 1px var(--vscode-input-border);
     background-color: var(--vscode-input-background);

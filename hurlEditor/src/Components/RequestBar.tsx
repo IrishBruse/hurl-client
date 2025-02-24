@@ -33,7 +33,13 @@ export function RequestBar({ request }: { request: Request }) {
                 padding: "1rem",
             }}>
             <Select defaultValue={method} onChange={changeMethod} options={methods} style={{ width: "100px" }}></Select>
-            <TextField value={url} onChange={changeUrl as any} placeholder="https://example.com/api/v1" style={{ width: "100%", minWidth: "200px" }} />
+            <TextField
+                value={url}
+                onChange={changeUrl as any}
+                name="url"
+                placeholder="https://example.com/api/v1"
+                style={{ width: "100%", minWidth: "200px" }}
+            />
             <Button
                 onClick={() => {
                     console.log("Click");

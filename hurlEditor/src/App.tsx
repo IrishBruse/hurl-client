@@ -21,6 +21,10 @@ function App() {
         vscode.postMessage({ command: "appReady" });
 
         const messageHandler = (event: MessageEvent) => {
+            if ((event.source as unknown) !== "hurl-editor") {
+                return;
+            }
+
             console.log("React received message:", event.data);
             if (event.data.type === "update") {
                 // Assume event.data.text contains the new request data
