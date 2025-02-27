@@ -12,6 +12,7 @@ const config = {
     format: "esm",
     target: "es2020",
     logLevel: "debug",
+    external: ["child_process"],
 };
 
 const meta = await esbuild.build(config);

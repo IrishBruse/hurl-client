@@ -1,39 +1,34 @@
 import { RequestBar } from "./Components/RequestBar";
 import { useEffect, useState } from "react";
 import { SplitPane } from "./VSCode/SplitPane";
-import { Method } from "hurl-js-parser/types";
+import { Entry, HurlFile, Method } from "hurl-js-parser/types";
 import { Tabs } from "./VSCode/Tabs";
 import { KeyValueTable } from "./VSCode/KeyValueTable";
 
 const vscode = window.acquireVsCodeApi();
 
 function App() {
-    const [hurl, setHurl] = useState({
+    const [entry, setHurl] = useState<Entry>({
         request: {
             method: "GET" as Method,
             url: "",
         },
     });
 
-    // Register the message listener and notify extension when ready
     useEffect(() => {
-        // Send a ready signal immediately once the app is mounted.
         vscode.postMessage({ command: "appReady" });
 
         const messageHandler = (event: MessageEvent) => {
-            if ((event.source as unknown) !== "hurl-editor") {
+            const data = event.data;
+
+            if (data.source !== "hurl-editor") {
                 return;
             }
 
-            console.log("React received message:", event.data);
-            if (event.data.type === "update") {
-                // Assume event.data.text contains the new request data
-                setHurl({
-                    request: {
-                        method: "GET",
-                        url: "",
-                    },
-                });
+            if (data.type === "update") {
+                const file = JSON.parse(data.text) as HurlFile;
+                console.log("Event (content): ", file);
+                setHurl(file.entries[0]);
             }
         };
 
@@ -44,10 +39,10 @@ function App() {
     return (
         <SplitPane initialWidth={window.innerWidth / 2} minLeft={250} minRight={200}>
             <div>
-                <RequestBar request={hurl.request} />
+                <RequestBar request={entry.request} />
                 <Tabs tabs={["Params", "Body", "Header", "Auth"]}>
                     <div>
-                        <KeyValueTable initialData={{ key: "value", bazz: "123" }} onChange={() => {}}></KeyValueTable>
+                        <KeyValueTable initialData={{}} onChange={() => {}}></KeyValueTable>
                     </div>
                     <div>B</div>
                     <div>C</div>

@@ -1,12 +1,7 @@
 import * as path from "node:path";
 import { workspace, type ExtensionContext } from "vscode";
 
-import {
-    LanguageClient,
-    TransportKind,
-    type LanguageClientOptions,
-    type ServerOptions,
-} from "vscode-languageclient/node";
+import { LanguageClient, TransportKind, type LanguageClientOptions, type ServerOptions } from "vscode-languageclient/node";
 import { HurlEditorProvider } from "./hurlEditor";
 
 let client: LanguageClient;

@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { parseHurl } from "hurl-js-parser";
 
 export class HurlEditorProvider implements vscode.CustomTextEditorProvider {
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
@@ -27,14 +28,18 @@ export class HurlEditorProvider implements vscode.CustomTextEditorProvider {
         webviewPanel.webview.html = getReactEntry(webviewPanel.webview, this.context.extensionUri);
 
         function updateWebview() {
-            webviewPanel.webview.postMessage({
-                type: "update",
-                text: document.getText(),
-            });
+            const hurl = parseHurl(document.getText());
+            if (hurl.sucess === true) {
+                webviewPanel.webview.postMessage({
+                    type: "update",
+                    source: "hurl-editor",
+                    text: JSON.stringify(hurl.data),
+                });
+            }
         }
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument((e) => {
             if (e.document.uri.toString() === document.uri.toString()) {
-                // updateWebview();
+                updateWebview();
             }
         });
 
@@ -72,7 +77,6 @@ function getReactEntry(webview: vscode.Webview, extensionUri: vscode.Uri): strin
 					style-src ${webview.cspSource} 'unsafe-inline';
 					script-src 'nonce-${nonce}' 'unsafe-inline';
 					">
-                <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
                 <link rel="stylesheet" href="${cssUri}" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			</head>
