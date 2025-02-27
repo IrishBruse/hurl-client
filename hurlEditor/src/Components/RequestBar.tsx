@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Method, Request } from "hurl-js-parser/types";
 import { useState } from "react";
 import { Select } from "../VSCode/Select";
@@ -15,16 +14,12 @@ const methods = [
     { value: "OPTIONS", label: "OPTIONS", style: { color: "cyan" } },
 ];
 
-export function RequestBar({ request }: { request: Request }) {
-    const [method, setMethod] = useState(request.method);
-    const [url, setUrl] = useState(request.url);
-    const changeMethod = (value: string) => {
-        setMethod(value as Method);
-    };
-    const changeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUrl(e.target?.value);
-    };
+export type RequestBarProps = {
+    request: Request;
+    onChange: (key: keyof Request, value: unknown) => void;
+};
 
+export function RequestBar({ request, onChange }: RequestBarProps) {
     return (
         <span
             style={{
@@ -32,17 +27,17 @@ export function RequestBar({ request }: { request: Request }) {
                 gap: "6px",
                 padding: "1rem",
             }}>
-            <Select defaultValue={method} onChange={changeMethod} options={methods} style={{ width: "100px" }}></Select>
+            <Select defaultValue={request.method} onChange={(value) => onChange("method", value)} options={methods} style={{ width: "100px" }}></Select>
             <TextField
-                value={url}
-                onChange={changeUrl as any}
+                value={request.url}
+                onChange={(value) => onChange("url", value)}
                 name="url"
                 placeholder="https://example.com/api/v1"
                 style={{ width: "100%", minWidth: "200px" }}
             />
             <Button
                 onClick={() => {
-                    console.log("Click");
+                    console.log("Run");
                 }}>
                 Send
             </Button>

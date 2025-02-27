@@ -1,7 +1,7 @@
 import { RequestBar } from "./Components/RequestBar";
 import { useEffect, useState } from "react";
 import { SplitPane } from "./VSCode/SplitPane";
-import { Entry, HurlFile, Method } from "hurl-js-parser/types";
+import { Entry, HurlFile } from "hurl-js-parser/types";
 import { Tabs } from "./VSCode/Tabs";
 import { KeyValueTable } from "./VSCode/KeyValueTable";
 
@@ -10,7 +10,7 @@ const vscode = window.acquireVsCodeApi();
 function App() {
     const [entry, setHurl] = useState<Entry>({
         request: {
-            method: "GET" as Method,
+            method: "GET",
             url: "",
         },
     });
@@ -39,7 +39,14 @@ function App() {
     return (
         <SplitPane initialWidth={window.innerWidth / 2} minLeft={250} minRight={200}>
             <div>
-                <RequestBar request={entry.request} />
+                <RequestBar
+                    request={entry.request}
+                    onChange={(key, value) => {
+                        console.log(key, value);
+
+                        setHurl((pre) => ({ ...pre, request: { ...pre.request, [key]: value } }));
+                    }}
+                />
                 <Tabs tabs={["Params", "Body", "Header", "Auth"]}>
                     <div>
                         <KeyValueTable initialData={{}} onChange={() => {}}></KeyValueTable>
