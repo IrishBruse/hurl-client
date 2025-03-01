@@ -1,8 +1,8 @@
-import type { Method, Request } from "hurl-js-parser/types";
-import { useState } from "react";
+import type { Request } from "hurl-js-parser/types";
 import { Select } from "../VSCode/Select";
 import { TextField } from "../VSCode/Textfield";
 import { Button } from "../VSCode/Button";
+import { vscode } from "../main";
 
 const methods = [
     { value: "GET", label: "GET", style: { color: "skyblue" } },
@@ -27,7 +27,7 @@ export function RequestBar({ request, onChange }: RequestBarProps) {
                 gap: "6px",
                 padding: "1rem",
             }}>
-            <Select defaultValue={request.method} onChange={(value) => onChange("method", value)} options={methods} style={{ width: "100px" }}></Select>
+            <Select value={request.method} onChange={(value) => onChange("method", value)} options={methods} style={{ width: "100px" }}></Select>
             <TextField
                 value={request.url}
                 onChange={(value) => onChange("url", value)}
@@ -38,6 +38,7 @@ export function RequestBar({ request, onChange }: RequestBarProps) {
             <Button
                 onClick={() => {
                     console.log("Run");
+                    vscode.postMessage({ type: "Foo", data: "bar" });
                 }}>
                 Send
             </Button>

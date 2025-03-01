@@ -4,7 +4,7 @@ import styles from "./Tabs.module.css";
 type TabsProps = {
     tabs: string[];
     style?: CSSProperties;
-    children: ReactNode[];
+    children?: ReactNode[];
 };
 
 export const Tabs: FunctionComponent<TabsProps> = ({ tabs, children }) => {

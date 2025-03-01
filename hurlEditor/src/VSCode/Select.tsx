@@ -8,14 +8,13 @@ type Option = {
 };
 
 type SelectProps = {
-    defaultValue: string;
+    value: string;
     onChange: (value: string) => void;
     style?: CSSProperties;
     options: Option[];
 };
 
-export const Select: FunctionComponent<SelectProps> = ({ defaultValue, onChange, style, options }) => {
-    const [value, setValue] = useState(defaultValue);
+export const Select: FunctionComponent<SelectProps> = ({ value, onChange, style, options }) => {
     const [open, setOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -38,7 +37,6 @@ export const Select: FunctionComponent<SelectProps> = ({ defaultValue, onChange,
                             key={value}
                             onClick={() => {
                                 onChange(value);
-                                setValue(value);
                                 setOpen(false);
                             }}
                             style={style}>

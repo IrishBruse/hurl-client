@@ -22,10 +22,10 @@ export class HurlEditorProvider implements vscode.CustomTextEditorProvider {
 
         webviewPanel.webview.options = {
             enableScripts: true,
-            localResourceRoots: [vscode.Uri.joinPath(extensionUri, "out"), vscode.Uri.joinPath(extensionUri, "hurlEditor/build")],
+            localResourceRoots: [vscode.Uri.joinPath(extensionUri, "client/src"), vscode.Uri.joinPath(extensionUri, "hurlEditor/build")],
         };
 
-        webviewPanel.webview.html = getReactEntry(webviewPanel.webview, this.context.extensionUri);
+        webviewPanel.webview.html = getProductionReactEntry(webviewPanel.webview, extensionUri);
 
         function updateWebview() {
             const hurl = parseHurl(document.getText());
@@ -51,41 +51,56 @@ export class HurlEditorProvider implements vscode.CustomTextEditorProvider {
         // Receive message from the webview.
         webviewPanel.webview.onDidReceiveMessage((e) => {
             // Check if the webview signals that it is ready
-            if (e.command === "appReady") {
+            if (e.type === "react-ready") {
                 updateWebview();
+                return;
+            }
+
+            if (e.type === "log") {
+                console.log(...JSON.parse(e.args));
+                return;
+            }
+
+            if (e.type === "warn") {
+                console.warn(...JSON.parse(e.args));
+                return;
+            }
+
+            if (e.type === "error") {
+                console.error(...JSON.parse(e.args));
                 return;
             }
         });
     }
 }
 
-function getReactEntry(webview: vscode.Webview, extensionUri: vscode.Uri): string {
+function getProductionReactEntry(webview: vscode.Webview, extensionUri: vscode.Uri): string {
     // The JS file from the React build output
     const scriptUri = getUri(webview, extensionUri, ["hurlEditor", "build", "hurl-editor.js"]);
     const cssUri = getUri(webview, extensionUri, ["hurlEditor", "build", "hurl-editor.css"]);
 
     const nonce = getNonce();
 
-    return `
+    const html = `
       <html lang="en">
 			<head>
 				<meta charset="UTF-8" />
 				<meta http-equiv="Content-Security-Policy"
-					content="default-src 'none';
-					img-src vscode-resource: https:;
-                    font-src ${webview.cspSource};
-					style-src ${webview.cspSource} 'unsafe-inline';
-					script-src 'nonce-${nonce}' 'unsafe-inline';
+					content="default-src 'self';
+					style-src ${webview.cspSource};
+					script-src 'self' 'nonce-${nonce}';
 					">
                 <link rel="stylesheet" href="${cssUri}" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			</head>
 			<body>
 				<div id="root"></div>
-				<script type="module" defer nonce="${nonce}" src="${scriptUri}"></script>
+				<script type="module" nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
       </html>
     `;
+
+    return html;
 }
 
 export function getUri(webview: vscode.Webview, extensionUri: vscode.Uri, pathList: string[]) {

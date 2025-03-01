@@ -1,22 +1,36 @@
-import { RequestBar } from "./Components/RequestBar";
 import { useEffect, useState } from "react";
 import { SplitPane } from "./VSCode/SplitPane";
-import { Entry, HurlFile } from "hurl-js-parser/types";
-import { Tabs } from "./VSCode/Tabs";
-import { KeyValueTable } from "./VSCode/KeyValueTable";
+import { Hurl, Request, Response } from "hurl-js-parser/types";
+import { vscode } from "./main";
+import bigExample from "./examples/bigExample.json";
+import { RequestPanel } from "./Components/RequestPanel";
+import { ResponsePanel } from "./Components/ResponsePanel";
 
-const vscode = window.acquireVsCodeApi();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+if ((window as any).acquireVsCodeApi) {
+    const logging = ["log", "warn", "error"] as const;
+    for (const type of logging) {
+        const method = console[type].bind(console);
+        console[type] = (...args) => {
+            vscode.postMessage({ type: type, args: JSON.stringify(args) });
+            method(...args);
+        };
+    }
+} else {
+    setTimeout(() => {
+        window.postMessage({
+            source: "hurl-editor",
+            type: "update",
+            text: JSON.stringify(bigExample),
+        });
+    }, 100);
+}
 
-function App() {
-    const [entry, setHurl] = useState<Entry>({
-        request: {
-            method: "GET",
-            url: "",
-        },
-    });
+export function App() {
+    const [hurl, setHurl] = useState<Hurl>();
 
     useEffect(() => {
-        vscode.postMessage({ command: "appReady" });
+        vscode.postMessage({ type: "react-ready" });
 
         const messageHandler = (event: MessageEvent) => {
             const data = event.data;
@@ -26,9 +40,10 @@ function App() {
             }
 
             if (data.type === "update") {
-                const file = JSON.parse(data.text) as HurlFile;
-                console.log("Event (content): ", file);
-                setHurl(file.entries[0]);
+                const file = JSON.parse(data.text) as Hurl;
+                setHurl(file);
+
+                console.log("Event (file): ", file);
             }
         };
 
@@ -36,28 +51,24 @@ function App() {
         return () => window.removeEventListener("message", messageHandler);
     }, []);
 
+    const onChangeRequest = (key: keyof Request, value: unknown) => {
+        console.log(key, value);
+    };
+
+    const onChangeResponse = (key: keyof Response, value: unknown) => {
+        console.log(key, value);
+    };
+
+    if (!hurl) {
+        return null;
+    }
+
+    const entry = hurl.entries[0];
+
     return (
         <SplitPane initialWidth={window.innerWidth / 2} minLeft={250} minRight={200}>
-            <div>
-                <RequestBar
-                    request={entry.request}
-                    onChange={(key, value) => {
-                        console.log(key, value);
-
-                        setHurl((pre) => ({ ...pre, request: { ...pre.request, [key]: value } }));
-                    }}
-                />
-                <Tabs tabs={["Params", "Body", "Header", "Auth"]}>
-                    <div>
-                        <KeyValueTable initialData={{}} onChange={() => {}}></KeyValueTable>
-                    </div>
-                    <div>B</div>
-                    <div>C</div>
-                    <div>D</div>
-                </Tabs>
-            </div>
-            <div style={{ margin: "1.5rem 1rem" }}>test</div>
+            <RequestPanel request={entry.request} onChange={onChangeRequest} key={entry.request.url} />
+            <ResponsePanel response={entry.response} onChange={onChangeResponse} />
         </SplitPane>
     );
 }
-export default App;

@@ -9,13 +9,13 @@ type Row = {
 };
 
 type KeyValueTableProps = {
-    initialData: Record<string, string>;
+    value: Record<string, string>;
     onChange: (value: Record<string, string>) => void;
     style?: CSSProperties;
 };
 
-export const KeyValueTable: FC<KeyValueTableProps> = ({ initialData, onChange }) => {
-    const [rows, setRows] = useState<Row[]>(() => Object.entries(initialData).map(([k, v]) => ({ key: k, value: v })));
+export const KeyValueTable: FC<KeyValueTableProps> = ({ value, onChange }) => {
+    const [rows, setRows] = useState<Row[]>(() => Object.entries(value).map(([k, v]) => ({ key: k, value: v })));
     const [editingKey, setEditingKey] = useState<string | null>(null);
     const [editingCol, setEditingCol] = useState<number>(0);
 
