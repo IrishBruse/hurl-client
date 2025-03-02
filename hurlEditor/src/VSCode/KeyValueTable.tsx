@@ -3,31 +3,29 @@ import styles from "./KeyValueTable.module.css";
 import { Button } from "./Button";
 import { TextField } from "./Textfield";
 
-type Row = {
+type KeyValue = {
     key: string;
     value: string;
 };
 
 type KeyValueTableProps = {
-    value: Record<string, string>;
-    onChange: (value: Record<string, string>) => void;
+    value?: KeyValue[];
+    onChange: (value: KeyValue[]) => void;
     style?: CSSProperties;
 };
 
 export const KeyValueTable: FC<KeyValueTableProps> = ({ value, onChange }) => {
-    const [rows, setRows] = useState<Row[]>(() => Object.entries(value).map(([k, v]) => ({ key: k, value: v })));
+    const [rows, setRows] = useState<KeyValue[]>(value ?? []);
     const [editingKey, setEditingKey] = useState<string | null>(null);
     const [editingCol, setEditingCol] = useState<number>(0);
 
     useEffect(() => {
-        const changed = {} as Record<string, string>;
-
-        for (const element of rows) {
-            changed[element.key] = element.value;
-        }
-
-        onChange(changed);
+        onChange(rows);
     }, [rows]);
+
+    useEffect(() => {
+        setRows(value ?? []);
+    }, [value]);
 
     const onBlurHandler: FocusEventHandler<HTMLTableRowElement> = (e) => {
         if (!e.currentTarget.parentNode?.contains(e.relatedTarget)) {
@@ -157,7 +155,7 @@ const EditableCell: FC<EditableCellProps> = ({ value, onChange, className, editi
     return (
         <td onDoubleClick={onDoubleClick} className={className}>
             {editing ? (
-                <TextField value={value} onChange={(e) => onChange(e.target.value)} autoFocus={focus} />
+                <TextField value={value} onChange={(e) => onChange(e)} autoFocus={focus} />
             ) : (
                 <div style={{ padding: "1px", border: "solid 1px transparent" }}>{value}</div>
             )}

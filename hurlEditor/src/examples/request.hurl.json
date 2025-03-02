@@ -1,0 +1,195 @@
+{
+    "entries": [
+        {
+            "request": {
+                "method": "GET",
+                "url": "https://example.org/api/dogs?id=4567",
+                "headers": [
+                    { "name": "User-Agent", "value": "My User Agent" },
+                    { "name": "Content-Type", "value": "application/json" }
+                ],
+                "comments": [
+                    "###############################################################################",
+                    " Request 1: Simple GET with URL query parameters, headers and Basic Authentication",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "https://example.org/forum/questions/",
+                "headers": [{ "name": "User-Agent", "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0)" }],
+                "query_string_params": [
+                    { "name": "search", "value": "Install Linux" },
+                    { "name": "order", "value": "newest" }
+                ],
+                "cookies": [
+                    { "name": "theme", "value": "light" },
+                    { "name": "sessionToken", "value": "abc123" }
+                ],
+                "comments": [
+                    "###############################################################################",
+                    " Request 2: GET with [QueryStringParams] and [Cookies]",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "https://example.org/contact",
+                "form_params": [
+                    { "name": "default", "value": "false" },
+                    { "name": "token", "value": "{{token}}" },
+                    { "name": "email", "value": "john.doe@rookie.org" },
+                    { "name": "number", "value": "33611223344" }
+                ],
+                "options": [
+                    { "value": 3, "unit": "s", "name": "delay" },
+                    { "name": "location", "value": true }
+                ],
+                "comments": [
+                    "###############################################################################",
+                    " Request 3: POST with [Options] and [FormParams] (application/x-www-form-urlencoded)",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "https://example.org/upload",
+                "multipart_form_data": [
+                    { "name": "field1", "value": "value1" },
+                    { "name": "field2", "filename": "example.txt" },
+                    { "name": "field3", "filename": "example.zip", "content_type": "application/zip" }
+                ],
+                "comments": [
+                    "###############################################################################",
+                    " Request 4: POST with [MultipartFormData] for file upload simulation",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "https://example.org/api/dogs",
+                "body": {
+                    "type": "json",
+                    "value": {
+                        "id": 0,
+                        "name": "Frieda",
+                        "picture": "images/scottish-terrier.jpeg",
+                        "age": 3,
+                        "breed": "Scottish Terrier",
+                        "location": "Lisco, Alabama"
+                    }
+                },
+                "comments": [
+                    "###############################################################################",
+                    " Request 5: POST with JSON request body",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "https://example.org/InStock",
+                "headers": [
+                    { "name": "Content-Type", "value": "application/soap+xml; charset=utf-8" },
+                    { "name": "SOAPAction", "value": "\"http://www.w3.org/2003/05/soap-envelope\"" }
+                ],
+                "body": {
+                    "type": "xml",
+                    "value": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:m=\"http://example.net\">\n  <soap:Header></soap:Header>\n  <soap:Body>\n    <m:GetStockPrice>\n      <m:StockName>GOOG</m:StockName>\n    </m:GetStockPrice>\n  </soap:Body>\n</soap:Envelope>"
+                },
+                "comments": [
+                    "###############################################################################",
+                    " Request 6: POST with XML request body (SOAP example)",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "https://example.org/starwars/graphql",
+                "body": {
+                    "type": "graphql",
+                    "value": "query Hero($episode: Episode, $withFriends: Boolean!) {\n  hero(episode: $episode) {\n    name\n    friends @include(if: $withFriends) {\n      name\n    }\n  }\n}\n"
+                },
+                "comments": [
+                    "###############################################################################",
+                    " Request 7: POST with a GraphQL query (with variables example)",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "https://example.org/models",
+                "body": {
+                    "type": "text",
+                    "value": "Year,Make,Model,Description,Price\n1997,Ford,E350,\"ac, abs, moon\",3000.00\n1999,Chevy,\"Venture \"\"Extended Edition\"\"\",\"\",4900.00\n1999,Chevy,\"Venture \"\"Extended Edition, Very Large\"\"\",,5000.00\n1996,Jeep,Grand Cherokee,\"MUST SELL! air, moon roof, loaded\",4799.00\n"
+                },
+                "comments": [
+                    "###############################################################################",
+                    " Request 8: POST with a multiline string body (CSV content)",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "https://example.org/helloworld",
+                "body": { "type": "text", "value": "Hello world!" },
+                "comments": [
+                    "###############################################################################",
+                    " Request 9: POST with an oneline string body",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "https://example.org/data",
+                "body": { "encoding": "base64", "value": "TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4=" },
+                "comments": [
+                    "###############################################################################",
+                    " Request 10: POST with a Base64-encoded body (binary data example)",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "PUT",
+                "url": "https://example.org/cafe",
+                "body": { "encoding": "base64", "value": "Y2Fmw6kK" },
+                "comments": [
+                    "###############################################################################",
+                    " Request 11: PUT with a Hex-encoded body (UTF-8 café example)",
+                    "###############################################################################"
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "https://example.org/uploadfile",
+                "body": { "type": "file", "filename": "example-data.bin" },
+                "comments": [
+                    "###############################################################################",
+                    " Request 12: POST with a file body (content loaded from a local file)",
+                    "###############################################################################"
+                ]
+            }
+        }
+    ]
+}

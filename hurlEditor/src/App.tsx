@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { SplitPane } from "./VSCode/SplitPane";
-import { Hurl, Request, Response } from "hurl-js-parser/types";
+import { Entry, Hurl, Request, Response } from "hurl-js-parser/types";
 import { vscode } from "./main";
-import bigExample from "./examples/bigExample.json";
+import bigExample from "./examples/request.hurl.json";
 import { RequestPanel } from "./Components/RequestPanel";
 import { ResponsePanel } from "./Components/ResponsePanel";
 
@@ -27,7 +27,9 @@ if ((window as any).acquireVsCodeApi) {
 }
 
 export function App() {
-    const [hurl, setHurl] = useState<Hurl>();
+    const [entries, setEntries] = useState<Entry[]>([]);
+
+    const [state, dispatch] = useReducer<Hurl | undefined, []>(reducer, undefined);
 
     useEffect(() => {
         vscode.postMessage({ type: "react-ready" });
@@ -41,7 +43,7 @@ export function App() {
 
             if (data.type === "update") {
                 const file = JSON.parse(data.text) as Hurl;
-                setHurl(file);
+                setEntries(file.entries);
 
                 console.log("Event (file): ", file);
             }
@@ -53,17 +55,30 @@ export function App() {
 
     const onChangeRequest = (key: keyof Request, value: unknown) => {
         console.log(key, value);
+
+        setEntries((prev) => {
+            const entries = [...prev];
+
+            entries[0] = {
+                request: {
+                    ...prev[0].request,
+                    [key]: value,
+                },
+            };
+
+            return entries;
+        });
     };
 
     const onChangeResponse = (key: keyof Response, value: unknown) => {
         console.log(key, value);
     };
 
-    if (!hurl) {
+    if (!state) {
         return null;
     }
 
-    const entry = hurl.entries[0];
+    const entry = state.entries[0];
 
     return (
         <SplitPane initialWidth={window.innerWidth / 2} minLeft={250} minRight={200}>
@@ -71,4 +86,8 @@ export function App() {
             <ResponsePanel response={entry.response} onChange={onChangeResponse} />
         </SplitPane>
     );
+}
+
+function reducer(prevState: Hurl | undefined): Hurl | undefined {
+    throw new Error("Function not implemented.");
 }

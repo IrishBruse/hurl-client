@@ -3,6 +3,7 @@ import { Select } from "../VSCode/Select";
 import { TextField } from "../VSCode/Textfield";
 import { Button } from "../VSCode/Button";
 import { vscode } from "../main";
+import { useEffect, useState } from "react";
 
 const methods = [
     { value: "GET", label: "GET", style: { color: "skyblue" } },
@@ -20,6 +21,12 @@ export type RequestBarProps = {
 };
 
 export function RequestBar({ request, onChange }: RequestBarProps) {
+    const [url, setUrl] = useState(request.url);
+
+    useEffect(() => {
+        onChange("url", url);
+    }, [url]);
+
     return (
         <span
             style={{
@@ -29,8 +36,8 @@ export function RequestBar({ request, onChange }: RequestBarProps) {
             }}>
             <Select value={request.method} onChange={(value) => onChange("method", value)} options={methods} style={{ width: "100px" }}></Select>
             <TextField
-                value={request.url}
-                onChange={(value) => onChange("url", value)}
+                value={url}
+                onChange={(value) => setUrl(value)}
                 name="url"
                 placeholder="https://example.com/api/v1"
                 style={{ width: "100%", minWidth: "200px" }}

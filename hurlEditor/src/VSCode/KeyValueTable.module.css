@@ -6,9 +6,10 @@
 
 .header {
     font-weight: 700;
+    background-color: hsla(0, 0%, 51%, 0.04);
 }
 
-.row:nth-child(odd) {
+.row:nth-child(even) {
     background-color: hsla(0, 0%, 51%, 0.04);
 }
 
