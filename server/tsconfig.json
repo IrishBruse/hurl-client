@@ -1,16 +1,16 @@
 {
-	"compilerOptions": {
-		"target": "es2020",
-		"lib": ["es2020"],
-		"module": "commonjs",
-		"moduleResolution": "node",
-		"sourceMap": true,
-		"strict": true,
-		"outDir": "out",
-		"rootDir": "src",
-		"incremental": true,
-		"tsBuildInfoFile": "./out/.tsbuildinfo"
-	},
-	"include": ["src"],
-	"exclude": ["node_modules", ".vscode-test"]
+    "compilerOptions": {
+        "target": "es2020",
+        "lib": ["es2020"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "strict": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "incremental": true,
+        "tsBuildInfoFile": "./dist/.tsbuildinfo"
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", ".vscode-test"]
 }

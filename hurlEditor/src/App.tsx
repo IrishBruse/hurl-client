@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import { SplitPane } from "./VSCode/SplitPane";
-import { Entry, Hurl, Request, Response } from "hurl-js-parser/types";
+import { Entry, Hurl, Method, Response } from "hurl-js-parser/types";
 import { vscode } from "./main";
 import bigExample from "./examples/request.hurl.json";
 import { RequestPanel } from "./Components/RequestPanel";
@@ -27,9 +27,8 @@ if ((window as any).acquireVsCodeApi) {
 }
 
 export function App() {
-    const [entries, setEntries] = useState<Entry[]>([]);
-
-    const [state, dispatch] = useReducer<Hurl | undefined, []>(reducer, undefined);
+    const [entryIndex, setEntryIndex] = useState(0);
+    const [state, dispatch] = useReducer(reducer, defaultHurl);
 
     useEffect(() => {
         vscode.postMessage({ type: "react-ready" });
@@ -43,7 +42,8 @@ export function App() {
 
             if (data.type === "update") {
                 const file = JSON.parse(data.text) as Hurl;
-                setEntries(file.entries);
+                dispatch({ type: "SET_ENTRIES", payload: file.entries });
+                setEntryIndex(0);
 
                 console.log("Event (file): ", file);
             }
@@ -53,23 +53,6 @@ export function App() {
         return () => window.removeEventListener("message", messageHandler);
     }, []);
 
-    const onChangeRequest = (key: keyof Request, value: unknown) => {
-        console.log(key, value);
-
-        setEntries((prev) => {
-            const entries = [...prev];
-
-            entries[0] = {
-                request: {
-                    ...prev[0].request,
-                    [key]: value,
-                },
-            };
-
-            return entries;
-        });
-    };
-
     const onChangeResponse = (key: keyof Response, value: unknown) => {
         console.log(key, value);
     };
@@ -78,16 +61,61 @@ export function App() {
         return null;
     }
 
-    const entry = state.entries[0];
+    const entry = state.entries[entryIndex];
 
     return (
         <SplitPane initialWidth={window.innerWidth / 2} minLeft={250} minRight={200}>
-            <RequestPanel request={entry.request} onChange={onChangeRequest} key={entry.request.url} />
+            <RequestPanel request={entry.request} dispatch={dispatch} />
             <ResponsePanel response={entry.response} onChange={onChangeResponse} />
         </SplitPane>
     );
 }
 
-function reducer(prevState: Hurl | undefined): Hurl | undefined {
-    throw new Error("Function not implemented.");
+const defaultHurl: Hurl = {
+    entries: [
+        {
+            request: {
+                method: "GET",
+                url: "",
+            },
+        },
+    ],
+};
+
+export type Action =
+    | { type: "UPDATE_METHOD"; payload: Method }
+    | { type: "UPDATE_URL"; payload: string }
+    | { type: "SET_ENTRIES"; payload: Entry[] }
+    | { type: "UPDATE"; payload: unknown };
+
+function reducer(prev: Hurl, action: Action): Hurl {
+    const entry = 0;
+
+    console.group("Reducer update");
+    console.log("State:", prev);
+    console.log("Entry:", entry);
+    const { type, payload } = action;
+    console.log("Action:", type);
+    console.log(payload);
+    console.groupEnd();
+
+    const hurl = { ...prev, entries: [...prev.entries] };
+
+    switch (type) {
+        case "SET_ENTRIES":
+            return { entries: payload };
+
+        case "UPDATE_URL":
+            hurl.entries[entry].request.url = payload;
+            return hurl;
+        case "UPDATE_METHOD":
+            hurl.entries[entry].request.method = payload;
+            return hurl;
+
+        default:
+            console.error("Unhandled Action:", type);
+            break;
+    }
+
+    return defaultHurl;
 }

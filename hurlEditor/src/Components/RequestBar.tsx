@@ -1,9 +1,10 @@
-import type { Request } from "hurl-js-parser/types";
+import type { Method, Request } from "hurl-js-parser/types";
 import { Select } from "../VSCode/Select";
 import { TextField } from "../VSCode/Textfield";
 import { Button } from "../VSCode/Button";
 import { vscode } from "../main";
-import { useEffect, useState } from "react";
+import { Dispatch } from "react";
+import { Action } from "../App";
 
 const methods = [
     { value: "GET", label: "GET", style: { color: "skyblue" } },
@@ -17,16 +18,10 @@ const methods = [
 
 export type RequestBarProps = {
     request: Request;
-    onChange: (key: keyof Request, value: unknown) => void;
+    dispatch: Dispatch<Action>;
 };
 
-export function RequestBar({ request, onChange }: RequestBarProps) {
-    const [url, setUrl] = useState(request.url);
-
-    useEffect(() => {
-        onChange("url", url);
-    }, [url]);
-
+export function RequestBar({ request, dispatch }: RequestBarProps) {
     return (
         <span
             style={{
@@ -34,10 +29,14 @@ export function RequestBar({ request, onChange }: RequestBarProps) {
                 gap: "6px",
                 padding: "1rem",
             }}>
-            <Select value={request.method} onChange={(value) => onChange("method", value)} options={methods} style={{ width: "100px" }}></Select>
+            <Select
+                value={request.method}
+                onChange={(value) => dispatch({ type: "UPDATE_METHOD", payload: value as Method })}
+                options={methods}
+                style={{ width: "100px" }}></Select>
             <TextField
-                value={url}
-                onChange={(value) => setUrl(value)}
+                value={request.url}
+                onChange={(value) => dispatch({ type: "UPDATE_URL", payload: value })}
                 name="url"
                 placeholder="https://example.com/api/v1"
                 style={{ width: "100%", minWidth: "200px" }}

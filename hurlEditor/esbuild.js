@@ -4,7 +4,7 @@ import { writeFile } from "fs/promises";
 /** @type {import("esbuild").BuildOptions} */
 const config = {
     entryPoints: ["src/main.tsx"],
-    outfile: "build/hurl-editor.js",
+    outfile: "dist/hurl-editor.js",
     bundle: true,
     metafile: true,
     // minify: true,

@@ -1,0 +1,54 @@
+.booleanSetting {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Custom container for checkbox */
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    margin: 0 6px 0 0;
+}
+
+/* Hide the default checkbox */
+.checkbox {
+    appearance: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+/* Custom checkmark shape */
+.checkmark {
+    width: 16px;
+    height: 16px;
+    background-color: var(--vscode-settings-checkboxBackground);
+    border: 1px solid var(--vscode-settings-checkboxBorder);
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+}
+
+.checkbox:focus + .checkmark {
+    border-color: var(--vscode-focusBorder);
+}
+
+/* Checkmark (hidden initially) */
+.checkmark::after {
+    content: "✔"; /* Unicode checkmark */
+    font-size: 14px;
+    color: var(--vscode-settings-checkboxForeground);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Initially hidden */
+    opacity: 0;
+}
+
+.checkbox:checked + .checkmark::after {
+    opacity: 1;
+}

@@ -1,0 +1,633 @@
+{
+    "entries": [
+        {
+            "request": {
+                "method": "GET",
+                "url": "/api/test?query={{getEnv}}",
+                "headers": [
+                    {
+                        "name": "Host",
+                        "value": "example.com"
+                    },
+                    {
+                        "name": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "name": "X-Request-ID",
+                        "value": "{{newUuid}}"
+                    }
+                ],
+                "multipart_form_data": [
+                    {
+                        "name": "upload",
+                        "filename": "./sample.txt",
+                        "content_type": "text/plain"
+                    },
+                    {
+                        "name": "attachment",
+                        "filename": "./attachment.pdf"
+                    },
+                    {
+                        "name": "description",
+                        "value": "\"This is a multipart field with a quoted-string: \"special:chars"
+                    }
+                ],
+                "cookies": [
+                    {
+                        "name": "sessionid",
+                        "value": "abcdef123456"
+                    }
+                ],
+                "options": [
+                    {
+                        "name": "aws-sigv4",
+                        "value": "{{getEnv}}"
+                    },
+                    {
+                        "name": "cacert",
+                        "value": "./certs/ca.pem"
+                    },
+                    {
+                        "name": "cert",
+                        "value": "./certs/client.pem:password123"
+                    },
+                    {
+                        "name": "key",
+                        "value": "./certs/client.key"
+                    },
+                    {
+                        "name": "compressed",
+                        "value": true
+                    },
+                    {
+                        "name": "connect-to",
+                        "value": "\"localhost:8080\""
+                    },
+                    {
+                        "value": 5,
+                        "unit": "s",
+                        "name": "connect-timeout"
+                    },
+                    {
+                        "value": 100,
+                        "unit": "ms",
+                        "name": "delay"
+                    },
+                    {
+                        "name": "location",
+                        "value": true
+                    },
+                    {
+                        "name": "location-trusted",
+                        "value": false
+                    },
+                    {
+                        "name": "http1.0",
+                        "value": false
+                    },
+                    {
+                        "name": "http1.1",
+                        "value": true
+                    },
+                    {
+                        "name": "http2",
+                        "value": true
+                    },
+                    {
+                        "name": "http3",
+                        "value": false
+                    },
+                    {
+                        "name": "insecure",
+                        "value": false
+                    },
+                    {
+                        "name": "ipv4",
+                        "value": true
+                    },
+                    {
+                        "name": "ipv6",
+                        "value": false
+                    },
+                    {
+                        "name": "limit-rate",
+                        "value": 1024
+                    },
+                    {
+                        "name": "max-redirs",
+                        "value": 10
+                    },
+                    {
+                        "name": "netrc",
+                        "value": false
+                    },
+                    {
+                        "name": "netrc-file",
+                        "value": "\"./.netrc\""
+                    },
+                    {
+                        "name": "netrc-optional",
+                        "value": true
+                    },
+                    {
+                        "name": "output",
+                        "value": "\"./output.txt\""
+                    },
+                    {
+                        "name": "path-as-is",
+                        "value": false
+                    },
+                    {
+                        "name": "proxy",
+                        "value": "\"http://proxy.example.com\""
+                    },
+                    {
+                        "name": "resolve",
+                        "value": "\"example.com:127.0.0.1\""
+                    },
+                    {
+                        "name": "repeat",
+                        "value": 3
+                    },
+                    {
+                        "name": "retry",
+                        "value": 2
+                    },
+                    {
+                        "value": 500,
+                        "unit": "ms",
+                        "name": "retry-interval"
+                    },
+                    {
+                        "name": "skip",
+                        "value": false
+                    },
+                    {
+                        "name": "unix-socket",
+                        "value": "\"/var/run/socket.sock\""
+                    },
+                    {
+                        "name": "user",
+                        "value": "\"user:password\""
+                    },
+                    {
+                        "name": "variable",
+                        "value": "myVar={{newDate}}"
+                    },
+                    {
+                        "name": "variable",
+                        "value": "envVar=production"
+                    },
+                    {
+                        "name": "verbose",
+                        "value": true
+                    },
+                    {
+                        "name": "very-verbose",
+                        "value": false
+                    }
+                ],
+                "body": {
+                    "type": "json",
+                    "value": {
+                        "message": "Hello, world!",
+                        "timestamp": "{{newDate}}",
+                        "extra": {
+                            "notes": "This is an oneline-string value with `escaped` backticks and a placeholder {{newUuid}}"
+                        }
+                    }
+                },
+                "comments": [
+                    " -------------------------------------------------------------------",
+                    " Entry 1 – Complete HTTP Request with All Request Sections & Options",
+                    " -------------------------------------------------------------------",
+                    " This entry demonstrates a complete HTTP request with headers, all request sections,",
+                    " file parameters (both as a multipart file and via oneline-file usage in a multipart section),",
+                    " placeholders using functions and filters, and an extensive options section."
+                ]
+            },
+            "response": {
+                "version": "HTTP/1.1",
+                "status": 200,
+                "headers": [
+                    {
+                        "name": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "name": "Set-Cookie",
+                        "value": "sessionid=abcdef123456"
+                    },
+                    {
+                        "name": "X-Server",
+                        "value": "\"Hurl-Test-Server\""
+                    },
+                    {
+                        "name": "X-Info",
+                        "value": "\"Additional \"quoted\" info\""
+                    },
+                    {
+                        "name": "X-Encoded",
+                        "value": "U29tZSBFbmNvZGVkIFZhbHVl"
+                    },
+                    {
+                        "name": "X-Content-Length",
+                        "value": "\"12345\""
+                    },
+                    {
+                        "name": "X-Date",
+                        "value": "\"2025-02-03T00:00:00Z\""
+                    },
+                    {
+                        "name": "X-Float",
+                        "value": "\"12.34\""
+                    },
+                    {
+                        "name": "X-Boolean",
+                        "value": "\"true\""
+                    },
+                    {
+                        "name": "X-String",
+                        "value": "hello"
+                    },
+                    {
+                        "name": "X-Created",
+                        "value": "2025-01-28"
+                    }
+                ],
+                "captures": [
+                    {
+                        "name": "authToken",
+                        "query": {
+                            "type": "header",
+                            "name": "Authorization"
+                        }
+                    }
+                ],
+                "asserts": [
+                    {
+                        "query": {
+                            "type": "status"
+                        },
+                        "predicate": {
+                            "type": "equal",
+                            "value": 200
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "status"
+                        },
+                        "predicate": {
+                            "not": true,
+                            "type": "equal",
+                            "value": 404
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "url"
+                        },
+                        "predicate": {
+                            "type": "contain",
+                            "value": "api/test"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "Content-Type"
+                        },
+                        "predicate": {
+                            "type": "equal",
+                            "value": "application/json"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "cookie",
+                            "expr": "sessionid"
+                        },
+                        "predicate": {
+                            "type": "equal",
+                            "value": "abcdef123456"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "body"
+                        },
+                        "predicate": {
+                            "type": "contain",
+                            "value": "Hello, world!"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "xpath",
+                            "expr": "/root/item"
+                        },
+                        "predicate": {
+                            "type": "exist"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "jsonpath",
+                            "expr": "$.data.user"
+                        },
+                        "predicate": {
+                            "type": "isCollection"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "regex",
+                            "expr": "/[0-9]{3}/"
+                        },
+                        "predicate": {
+                            "type": "match",
+                            "value": "200"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "variable",
+                            "name": "myVar"
+                        },
+                        "predicate": {
+                            "type": "equal",
+                            "value": "2025-02-03"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "duration"
+                        },
+                        "predicate": {
+                            "type": "greater",
+                            "value": 100
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "sha256"
+                        },
+                        "predicate": {
+                            "type": "equal",
+                            "value": "base64,ABC123def456==;"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "md5"
+                        },
+                        "predicate": {
+                            "type": "not-equal",
+                            "value": "hex,deadbeef;"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "bytes"
+                        },
+                        "predicate": {
+                            "type": "isEmpty"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "body"
+                        },
+                        "predicate": {
+                            "type": "start-with",
+                            "value": "{"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "body"
+                        },
+                        "predicate": {
+                            "type": "end-with",
+                            "value": "}"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "body"
+                        },
+                        "predicate": {
+                            "type": "contain",
+                            "value": "{}"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "body"
+                        },
+                        "predicate": {
+                            "type": "match",
+                            "value": "Hello, world!"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "body"
+                        },
+                        "predicate": {
+                            "type": "include",
+                            "value": "world"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "X-Content-Length"
+                        },
+                        "predicate": {
+                            "type": "isInteger"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "X-Float"
+                        },
+                        "predicate": {
+                            "type": "isFloat"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "X-Boolean"
+                        },
+                        "predicate": {
+                            "type": "isBoolean"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "X-String"
+                        },
+                        "predicate": {
+                            "type": "isString"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "X-Content-Length"
+                        },
+                        "predicate": {
+                            "type": "greater-or-equal",
+                            "value": 10000
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "X-Content-Length"
+                        },
+                        "predicate": {
+                            "type": "less-or-equal",
+                            "value": 20000
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "X-Float"
+                        },
+                        "predicate": {
+                            "type": "less",
+                            "value": "20.0"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "X-Date"
+                        },
+                        "predicate": {
+                            "type": "isIsoDate"
+                        }
+                    },
+                    {
+                        "query": {
+                            "type": "header",
+                            "name": "X-Created"
+                        },
+                        "predicate": {
+                            "type": "isDate"
+                        }
+                    }
+                ],
+                "body": {
+                    "type": "json",
+                    "value": {
+                        "data": {
+                            "user": {
+                                "id": 12345,
+                                "name": "John Doe"
+                            },
+                            "created": "2025-01-28T12:00:00Z"
+                        },
+                        "items": [
+                            "first",
+                            "second",
+                            "third"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "/api/multiline HTTP/2",
+                "headers": [
+                    {
+                        "name": "Content-Type",
+                        "value": "text/plain"
+                    },
+                    {
+                        "name": "X-Multiline",
+                        "value": "`Single line header with `escaped` backticks and a placeholder {{newUuid}}`"
+                    }
+                ],
+                "form_params": [
+                    {
+                        "name": "description",
+                        "value": "\"This request demonstrates multiline-string bodies.\""
+                    }
+                ],
+                "options": [
+                    {
+                        "name": "retry",
+                        "value": 5
+                    },
+                    {
+                        "value": 2,
+                        "unit": "s",
+                        "name": "retry-interval"
+                    },
+                    {
+                        "name": "variable",
+                        "value": "sampleVar={{newDate}}"
+                    }
+                ],
+                "body": {
+                    "type": "json",
+                    "value": "{\n  \"message\": \"This is a multiline JSON message\",\n  \"details\": \"Supports \"quotes\", \\backslashes\\, and special characters: #, :, and {}.\",\n}\n"
+                },
+                "comments": [
+                    " -------------------------------------------------------------------",
+                    " Entry 3 – POST Request with Multiline & Oneline Strings, XML, and Advanced Filters",
+                    " -------------------------------------------------------------------",
+                    " This entry demonstrates:",
+                    " - A POST method using HTTP/2.",
+                    " - Oneline-string usage in headers.",
+                    " - A multiline-string body that specifies a type (\"json\") and includes attributes (\"escape\" and \"novariable\").",
+                    " - An XML body example using the XML production.",
+                    " - Placeholders and functions with additional filters (base64Encode, decode, count, split, replace,",
+                    "   to-int, to-float, htmlEscape, htmlUnescape, regex, daysAfterNow, urlDecode, urlEncode, xpath)."
+                ]
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "url": "/graphql HTTP/1.1",
+                "headers": [
+                    {
+                        "name": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "options": [
+                    {
+                        "name": "variable",
+                        "value": "queryVar={{getEnv}}"
+                    }
+                ],
+                "body": {
+                    "type": "graphql",
+                    "value": "# GraphQL Query Example\nquery GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n  }\n}\n"
+                },
+                "comments": [
+                    " End of the multiline-string.",
+                    " -------------------------------------------------------------------",
+                    " Entry 4 – POST Request with a GraphQL Multiline String",
+                    " -------------------------------------------------------------------",
+                    " This entry demonstrates a GraphQL request using a multiline-string with type \"graphql\".",
+                    " It also shows usage of a variable inside the GraphQL query and the \"novariable\" attribute.",
+                    " Note: GraphQL type is one of the supported multiline-string types per the grammar."
+                ]
+            }
+        }
+    ]
+}

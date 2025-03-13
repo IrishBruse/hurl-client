@@ -2,15 +2,17 @@ import type { Request } from "hurl-js-parser/types";
 import { RequestBar } from "./RequestBar";
 import { KeyValueTable } from "../VSCode/KeyValueTable";
 import { Tabs } from "../VSCode/Tabs";
-import { useEffect, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import Editor from "react-simple-code-editor";
+import { Action } from "../App";
+import { OptionsTab } from "./OptionsTab";
 
 export type RequestPanelProps = {
     request: Request;
-    onChange: (key: keyof Request, value: unknown) => void;
+    dispatch: Dispatch<Action>;
 };
 
-export function RequestPanel({ request, onChange }: RequestPanelProps) {
+export function RequestPanel({ request, dispatch }: RequestPanelProps) {
     const [code, setCode] = useState("");
 
     useEffect(() => {
@@ -19,12 +21,7 @@ export function RequestPanel({ request, onChange }: RequestPanelProps) {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
-            <RequestBar
-                request={request}
-                onChange={(key, value) => {
-                    onChange(key, value);
-                }}
-            />
+            <RequestBar request={request} dispatch={dispatch} />
             <Tabs tabs={["Params", "Body", "Header", "Auth", "Options"]}>
                 <div>
                     <KeyValueTable value={[{ key: "asd", value: "dsa" }]} onChange={() => {}}></KeyValueTable>
@@ -44,9 +41,10 @@ export function RequestPanel({ request, onChange }: RequestPanelProps) {
                 </div>
                 <div>D</div>
                 <div>
-                    <KeyValueTable
+                    {/* <KeyValueTable
                         value={request.options?.filter((v) => v.name !== "variable").flatMap((opt) => ({ key: opt.name, value: opt.value + (opt.unit ?? "") }))}
-                        onChange={() => {}}></KeyValueTable>
+                        onChange={() => {}}></KeyValueTable> */}
+                    <OptionsTab request={request} dispatch={dispatch}></OptionsTab>
                 </div>
             </Tabs>
         </div>
